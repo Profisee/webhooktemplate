@@ -1,0 +1,72 @@
+.topbar {
+    background: #fff !important;
+}
+
+.select-label {
+    color: #fff !important;
+}
+
+.swagger-ui .topbar .download-url-wrapper .select-label select {
+    border: 2px solid #00a694 !important;
+}
+
+.topbar-wrapper img[alt="Swagger UI"], .topbar-wrapper span {
+    visibility: collapse !important;
+}
+
+.topbar-wrapper .link:before {
+    content: url("../swashbuckle/images/profisee.png") !important;
+    padding-top: 2px;
+}
+
+.errors-wrapper {
+    display: none !IMPORTANT;
+}
+
+.link-table-cell {
+    padding: 4px !IMPORTANT;
+    border: 1px solid black !IMPORTANT;
+}
+
+.link-table-label-cell {
+    width: 200px;
+}
+
+.swagger-ui .response[data-code] .response-col_status {
+    margin-top: 14px;
+    display: block;
+    color: orange;
+    font-weight: bold;
+}
+
+.swagger-ui .response {
+    border-bottom: 1px solid lightgray;
+}
+
+.swagger-ui .opblock-body pre.microlight {
+    margin-bottom: 10px;
+}
+
+.swagger-ui .response[data-code='200'] .response-col_status {
+    color: green;
+}
+
+.swagger-ui .response[data-code='201'] .response-col_status {
+    color: green;
+}
+
+.swagger-ui .response[data-code='204'] .response-col_status {
+    color: green;
+}
+
+.swagger-ui .response[data-code='500'] .response-col_status {
+    color: red;
+}
+
+.response-col_links {
+    display: none;
+}
+
+.swagger-ui table {
+    font-size: 0.95em;
+}
