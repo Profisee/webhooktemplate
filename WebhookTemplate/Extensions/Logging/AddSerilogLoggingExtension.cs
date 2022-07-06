@@ -7,9 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Profisee.WebhookTemplate.Configuration;
 using Serilog;
 using Serilog.Debugging;
+using Serilog.Sinks.MSSqlServer;
 using System;
 using System.IO;
-using Serilog.Sinks.MSSqlServer;
 
 namespace Profisee.WebhookTemplate.Extensions.Logging
 {
@@ -56,32 +56,14 @@ namespace Profisee.WebhookTemplate.Extensions.Logging
             var loggingConnectionString = appSettings.LoggingConnectionString;
             if (!string.IsNullOrWhiteSpace(loggingConnectionString))
             {
-                var columnOptions = new ColumnOptions();
-                columnOptions.Store.Remove(StandardColumn.MessageTemplate);
-                columnOptions.Store.Remove(StandardColumn.Properties);
-
-                var sinkOptions = new MSSqlServerSinkOptions
-                {
-                    AutoCreateSqlTable = true,
-                    SchemaName = "WebhookTemplate",
-                    TableName = "Log"
-                };
-
-                logConfiguration.AuditTo
-                    .MSSqlServer(
-                        connectionString: loggingConnectionString,
-                        sinkOptions: sinkOptions,
-                        columnOptions: columnOptions);
-
+                logConfiguration.AddProfiseeSqlLogging(loggingConnectionString);
                 useDatabaseLogging = true;
             }
 
             var loggingFilePath = appSettings.LoggingFilePath;
             if (!string.IsNullOrWhiteSpace(loggingFilePath))
             {
-                logConfiguration.WriteTo
-                    .File(loggingFilePath, rollOnFileSizeLimit: true, rollingInterval: RollingInterval.Infinite);
-
+                logConfiguration.AddProfiseeFileLogging(loggingFilePath);
                 useCustomFileLogging = true;
             }
 
@@ -104,6 +86,32 @@ namespace Profisee.WebhookTemplate.Extensions.Logging
             }
 
             return services;
+        }
+
+        private static void AddProfiseeSqlLogging(this LoggerConfiguration logConfiguration, string loggingConnectionString)
+        {
+            var columnOptions = new ColumnOptions();
+            columnOptions.Store.Remove(StandardColumn.MessageTemplate);
+            columnOptions.Store.Remove(StandardColumn.Properties);
+
+            var sinkOptions = new MSSqlServerSinkOptions
+            {
+                AutoCreateSqlTable = true,
+                SchemaName = "WebhookTemplate",
+                TableName = "Log"
+            };
+
+            logConfiguration.AuditTo
+                .MSSqlServer(
+                    connectionString: loggingConnectionString,
+                    sinkOptions: sinkOptions,
+                    columnOptions: columnOptions);
+        }
+
+        private static void AddProfiseeFileLogging(this LoggerConfiguration logConfiguration, string loggingFilePath)
+        {
+            logConfiguration.WriteTo
+                    .File(loggingFilePath, rollOnFileSizeLimit: true, rollingInterval: RollingInterval.Infinite);
         }
     }
 }

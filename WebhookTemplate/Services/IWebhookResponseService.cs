@@ -13,5 +13,7 @@ namespace Profisee.WebhookTemplate.Services
         Task<WebhookResponseDto> ProcessRequest(Dictionary<string, object> data);
 
         Task<WebhookResponseDto> ProcessRequest(WebhookRequestDto dto);
+
+        Task ProcessRequest(SubscriberPayloadDto dto);
     }
 }

@@ -2,20 +2,27 @@
 // Copyright (c) Profisee Corporation. All Rights Reserved.
 //==============================================================================
 
+using System;
 using System.Runtime.Serialization;
 
 namespace Profisee.WebhookTemplate.Dtos
 {
     /// <summary>
-    /// Simple Data Transfer Object (dto) for receiving a typed webhook request payload.
+    /// The part of the Subscriber payload that contains information about the related entity.
     /// </summary>
     [DataContract]
-    public class WebhookRequestDto
+    public class EntityObjectDto
     {
         /// <summary>
-        /// For the workflow configured for this example, the webhook activity sends a payload with the code of the product entity.
+        /// The uid of the entity in the Profisee Service
         /// </summary>
         [DataMember]
-        public string Code { get; set; }
+        public Guid Id { get; set; }
+
+        /// <summary>
+        /// The name of the entity in the Profisee Service
+        /// </summary>
+        [DataMember]
+        public string Name { get; set; }
     }
 }

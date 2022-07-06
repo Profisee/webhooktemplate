@@ -4,8 +4,8 @@ const pollDom = () => {
     if (renderedMarkdownDivElements.length) {
         let headingContent = `
             <p>
-                This sample webhook provides a basic template for developers looking to create a webhook to use with Profisee's workflow engine.
-                The API accepts and returns JSON.
+                This sample webhook provides a basic template for developers looking to create a webhook to use with Profisee's eventing or workflow engine.
+                This API accepts and returns JSON.
             </p>
 
             <p>

@@ -17,7 +17,13 @@ namespace Profisee.WebhookTemplate.Extensions.Mvc
                 options.Conventions.Add(convention);
             });
 
-            services.AddControllers();
+            services
+                .AddControllers()
+                .ConfigureApiBehaviorOptions(options =>
+                {
+                    // For Swagger
+                    options.SuppressMapClientErrors = true;
+                });
 
             return services;
         }

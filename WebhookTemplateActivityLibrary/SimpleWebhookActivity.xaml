@@ -1,0 +1,180 @@
+﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="SimpleWebhookActivity"
+ xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+ xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+ xmlns:mca="clr-namespace:Microsoft.CSharp.Activities;assembly=System.Activities"
+ xmlns:ppcc="clr-namespace:Profisee.Platform.CoreData.Contracts;assembly=Profisee.Platform.CoreData.Contracts"
+ xmlns:ppwas="clr-namespace:Profisee.Platform.Workflow.Activities.Support;assembly=Profisee.Platform.Workflow.Activities"
+ xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
+ xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
+ xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
+ xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
+ xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=mscorlib"
+ xmlns:sd="clr-namespace:System.Diagnostics;assembly=System"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property Name="RecordDataContext" Type="InArgument(ppcc:RecordDataContext)" />
+  </x:Members>
+  <sap2010:ExpressionActivityEditor.ExpressionActivityEditor>C#</sap2010:ExpressionActivityEditor.ExpressionActivityEditor>
+  <sap2010:WorkflowViewState.IdRef>ProjectTemplate.Activity1_1</sap2010:WorkflowViewState.IdRef>
+  <TextExpression.NamespacesForImplementation>
+    <sco:Collection x:TypeArguments="x:String">
+      <x:String>System</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Text</x:String>
+      <x:String>Profisee.Platform.CoreData.Contracts</x:String>
+    </sco:Collection>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <sco:Collection x:TypeArguments="AssemblyReference">
+      <AssemblyReference>netstandard</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Data.DataSetExtensions</AssemblyReference>
+      <AssemblyReference>Microsoft.CSharp</AssemblyReference>
+      <AssemblyReference>PresentationCore</AssemblyReference>
+      <AssemblyReference>PresentationFramework</AssemblyReference>
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.Activities.Presentation</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System.Drawing</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization</AssemblyReference>
+      <AssemblyReference>System.ServiceModel</AssemblyReference>
+      <AssemblyReference>System.ServiceModel.Activities</AssemblyReference>
+      <AssemblyReference>System.Workflow.Activities</AssemblyReference>
+      <AssemblyReference>System.Workflow.ComponentModel</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>Profisee.Platform.Workflow.Contracts</AssemblyReference>
+      <AssemblyReference>Profisee.Platform.Workflow.Activities</AssemblyReference>
+      <AssemblyReference>Profisee.Platform.Workflow.Common</AssemblyReference>
+      <AssemblyReference>Profisee.Platform.CoreData.Contracts</AssemblyReference>
+      <AssemblyReference>Profisee.Platform.Services.AddressVerification.Contracts</AssemblyReference>
+      <AssemblyReference>Profisee.Platform.Services.Matching.Contracts</AssemblyReference>
+      <AssemblyReference>WindowsBase</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>WebhookTemplateActivityLibrary</AssemblyReference>
+    </sco:Collection>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="scg:Dictionary(x:String, x:Object)" Name="Input">
+        <Variable.Default>
+          <mca:CSharpValue x:TypeArguments="scg:Dictionary(x:String, x:Object)">new Dictionary&lt;string, object&gt; { { "Code", RecordDataContext.Code } }</mca:CSharpValue>
+        </Variable.Default>
+      </Variable>
+      <Variable x:TypeArguments="x:Int32" Default="0" Name="ProcessingStatus" />
+      <Variable x:TypeArguments="scg:Dictionary(x:String, x:Object)" Name="Output">
+        <Variable.Default>
+          <mca:CSharpValue x:TypeArguments="scg:Dictionary(x:String, x:Object)">new Dictionary&lt;string, object&gt;()</mca:CSharpValue>
+        </Variable.Default>
+      </Variable>
+    </Sequence.Variables>
+    <ppwas:InitiateTemplateWorkflow InitiatingUser="{x:Null}" sap2010:WorkflowViewState.IdRef="InitiateTemplateWorkflow_1">
+      <ppwas:InitiateTemplateWorkflow.RecordDataContext>
+        <InArgument x:TypeArguments="ppcc:RecordDataContext">
+          <mca:CSharpValue x:TypeArguments="ppcc:RecordDataContext">RecordDataContext</mca:CSharpValue>
+        </InArgument>
+      </ppwas:InitiateTemplateWorkflow.RecordDataContext>
+    </ppwas:InitiateTemplateWorkflow>
+    <ppwas:LogMessage sap2010:WorkflowViewState.IdRef="LogMessage_1" Message="Workflow Initiated">
+      <ppwas:LogMessage.LogType>
+        <InArgument x:TypeArguments="sd:EventLogEntryType">
+          <mca:CSharpValue x:TypeArguments="sd:EventLogEntryType">System.Diagnostics.EventLogEntryType.Information</mca:CSharpValue>
+        </InArgument>
+      </ppwas:LogMessage.LogType>
+    </ppwas:LogMessage>
+    <ppwas:Webhook sap2010:Annotation.AnnotationText="Input - What the webhook receives. &#xA;&#xA;Response Status and Response Payload - What the webhook returns.&#xA;&#xA;The Response Payload is loaded into the Output var." sap2010:WorkflowViewState.IdRef="Webhook_1">
+      <ppwas:Webhook.ProcessingStatus>
+        <OutArgument x:TypeArguments="x:Int32">
+          <mca:CSharpReference x:TypeArguments="x:Int32">ProcessingStatus</mca:CSharpReference>
+        </OutArgument>
+      </ppwas:Webhook.ProcessingStatus>
+      <ppwas:Webhook.RequestPayload>
+        <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)">
+          <mca:CSharpValue x:TypeArguments="scg:Dictionary(x:String, x:Object)">Input</mca:CSharpValue>
+        </InArgument>
+      </ppwas:Webhook.RequestPayload>
+      <ppwas:Webhook.ResponsePayload>
+        <OutArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)">
+          <mca:CSharpReference x:TypeArguments="scg:Dictionary(x:String, x:Object)">Output</mca:CSharpReference>
+        </OutArgument>
+      </ppwas:Webhook.ResponsePayload>
+    </ppwas:Webhook>
+    <ppwas:LogMessage sap2010:Annotation.AnnotationText="Output the Processing Status value." sap2010:WorkflowViewState.IdRef="LogMessage_2">
+      <ppwas:LogMessage.LogType>
+        <InArgument x:TypeArguments="sd:EventLogEntryType">
+          <mca:CSharpValue x:TypeArguments="sd:EventLogEntryType">System.Diagnostics.EventLogEntryType.Information</mca:CSharpValue>
+        </InArgument>
+      </ppwas:LogMessage.LogType>
+      <ppwas:LogMessage.Message>
+        <InArgument x:TypeArguments="x:String">
+          <mca:CSharpValue x:TypeArguments="x:String">"ProcessingStatus: " + ProcessingStatus</mca:CSharpValue>
+        </InArgument>
+      </ppwas:LogMessage.Message>
+    </ppwas:LogMessage>
+    <ForEach x:TypeArguments="scg:KeyValuePair(x:String, x:Object)" DisplayName="ForEach&lt;KeyValuePair&lt;string, object&gt;&gt;" sap2010:WorkflowViewState.IdRef="ForEach`1_1">
+      <ForEach.Values>
+        <InArgument x:TypeArguments="scg:IEnumerable(scg:KeyValuePair(x:String, x:Object))">
+          <mca:CSharpValue x:TypeArguments="scg:IEnumerable(scg:KeyValuePair(x:String, x:Object))">Output</mca:CSharpValue>
+        </InArgument>
+      </ForEach.Values>
+      <ActivityAction x:TypeArguments="scg:KeyValuePair(x:String, x:Object)">
+        <ActivityAction.Argument>
+          <DelegateInArgument x:TypeArguments="scg:KeyValuePair(x:String, x:Object)" Name="kvp" />
+        </ActivityAction.Argument>
+        <ppwas:LogMessage sap2010:WorkflowViewState.IdRef="LogMessage_3">
+          <ppwas:LogMessage.LogType>
+            <InArgument x:TypeArguments="sd:EventLogEntryType">
+              <mca:CSharpValue x:TypeArguments="sd:EventLogEntryType">System.Diagnostics.EventLogEntryType.Information</mca:CSharpValue>
+            </InArgument>
+          </ppwas:LogMessage.LogType>
+          <ppwas:LogMessage.Message>
+            <InArgument x:TypeArguments="x:String">
+              <mca:CSharpValue x:TypeArguments="x:String">$"Key: {kvp.Key} - Value: {kvp.Value}"</mca:CSharpValue>
+            </InArgument>
+          </ppwas:LogMessage.Message>
+        </ppwas:LogMessage>
+      </ActivityAction>
+    </ForEach>
+    <sads:DebugSymbol.Symbol>d1xDOlxEZXZPcHNcUHJvZmlzZWVcV2ViaG9va1RlbXBsYXRlXFdlYmhvb2tUZW1wbGF0ZUFjdGl2aXR5TGlicmFyeVxTaW1wbGVXZWJob29rQWN0aXZpdHkueGFtbBU9A48BDgIBAUELQa4BAgEIRDNENgIBB0cLR4kBAgECSwVRJgIBQlIFWBgCATtZBWkVAgEragV1GAIBIHYFjQEPAgENTgtOaAIBQ1JOUmICAUFVC1WFAQIBPGYLZnECATZhC2FoAgExXAtcYAIBLHILcnACASZtC22FAQIBIXkLeXwCARuAAQmLARwCAQ6IAQ+IAXMCARWDAQ+DAYkBAgEP</sads:DebugSymbol.Symbol>
+  </Sequence>
+  <sap2010:WorkflowViewState.ViewStateManager>
+    <sap2010:ViewStateManager>
+      <sap2010:ViewStateData Id="InitiateTemplateWorkflow_1" sap:VirtualizedContainerService.HintSize="381,62" />
+      <sap2010:ViewStateData Id="LogMessage_1" sap:VirtualizedContainerService.HintSize="381,88" />
+      <sap2010:ViewStateData Id="Webhook_1" sap:VirtualizedContainerService.HintSize="381,115">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="LogMessage_2" sap:VirtualizedContainerService.HintSize="381,88">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="LogMessage_3" sap:VirtualizedContainerService.HintSize="351,88" />
+      <sap2010:ViewStateData Id="ForEach`1_1" sap:VirtualizedContainerService.HintSize="381,238" />
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="403,875">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="ProjectTemplate.Activity1_1" sap:VirtualizedContainerService.HintSize="443,955">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="ShouldExpandAll">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+    </sap2010:ViewStateManager>
+  </sap2010:WorkflowViewState.ViewStateManager>
+</Activity>

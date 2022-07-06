@@ -3,6 +3,7 @@
 //==============================================================================
 
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Profisee.WebhookTemplate.Contexts;
 using Profisee.WebhookTemplate.Dtos;
 using System.Collections.Generic;
@@ -73,6 +74,19 @@ namespace Profisee.WebhookTemplate.Services
             this.logger.LogInformation($"{this.GetType().Name}.{MethodBase.GetCurrentMethod().Name} - Exit");
 
             return result;
+        }
+
+        public async Task ProcessRequest(SubscriberPayloadDto dto)
+        {
+            this.logger.LogInformation($"{this.GetType().Name}.{MethodBase.GetCurrentMethod().Name} - Entry");
+
+            this.logger.LogInformation($"{this.GetType().Name}.{MethodBase.GetCurrentMethod().Name} - Arg Data:");
+
+            var payloadString = JsonConvert.SerializeObject(dto, Formatting.Indented);
+
+            this.logger.LogInformation($"{this.GetType().Name}.{MethodBase.GetCurrentMethod().Name} - {payloadString}");
+
+            this.logger.LogInformation($"{this.GetType().Name}.{MethodBase.GetCurrentMethod().Name} - Exit");
         }
     }
 }
