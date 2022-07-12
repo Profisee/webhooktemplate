@@ -20,8 +20,8 @@ Included in this project is a webhook activity library with a sample webhook act
 
 ## Content
 
-- Additional Files - A simple model and data archive to restore and test against, along with a sample activity that can be imported via FastApp Studios
-- Webhook Template - A sample webhook project that can be compiled and deployed to use as webhook for Profisee Service webhook activities and events
+- Additional Files - A simple model and data archive to restore and test against, along with a sample activity that can be imported via FastApp Studio.
+- Webhook Template - A sample webhook project that can be compiled and deployed to use as webhook for Profisee Service webhook activities and events.
 - Webhook Activity Library - A Workflow Activity project that contains the uncompiled SampleWebhookActivity.wf workflow file found in AdditionalFiles. This can be used to see how webhook activities are configured.
 
 ## Webhook Setup
@@ -58,7 +58,7 @@ The Swagger page documents the endpoints for the webhook, including information 
 Three endpoints are available in this application. They operate in the following manner:
 
 - "profisee/v1/webhook/activity-generic" - This endpoint demonstrates receiving an untyped object in the form of a generic string-object dictionary. The backing service logs the content of the dictionary, and then returns a WebhookResponseDto object.
-- "profisee/v1/webhook/activity-typed" - This endpoint demonstrates receiving a typed object in the form of WebhookRequestDto. This binds the content received in the http request body to the WebhookRequestDto object, and then outputs the code value. It is best practice to use typed objects when receiving incoming requests from the Profisee service, as it is more easy to build validation logic and error handling around typed objects than a generic dictionary representing an object.
+- "profisee/v1/webhook/activity-typed" - This endpoint demonstrates receiving a typed object in the form of WebhookRequestDto. This binds the content received in the http request body to the WebhookRequestDto object, and then outputs the code value. It is best practice to use typed objects when receiving incoming requests from the Profisee service, as it is easier to build validation logic and error handling around typed objects than a generic dictionary representing an object.
 - "profisee/v1/webhook/subscriber" - This endpoint is to be used with eventing. This endpoint receives a SubscriberPayloadDto containing information about the event that occured.
 
 ## Additional Notes
