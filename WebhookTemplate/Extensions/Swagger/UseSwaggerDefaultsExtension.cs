@@ -19,8 +19,6 @@ namespace Profisee.WebhookTemplate.Extensions.Swagger
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
-                var assembly = Assembly.GetExecutingAssembly();
-
                 var description = provider.ApiVersionDescriptions.First();
                 var url = $"/swagger/{description.GroupName}/swagger.json";
                 var name = description.GroupName.ToUpperInvariant();
@@ -28,16 +26,13 @@ namespace Profisee.WebhookTemplate.Extensions.Swagger
 
                 options.RoutePrefix = string.Empty;
 
+                var assembly = Assembly.GetExecutingAssembly();
+
                 options.IndexStream = () => assembly.GetManifestResourceStream("WebhookTemplate.wwwroot.swashbuckle.index.html");
 
                 options.InjectStylesheet("../swashbuckle/styles.css");
 
-                options.DocExpansion(DocExpansion.Full);
-
                 options.InjectJavascript("../swashbuckle/custom.js");
-
-                // Disable validator messages on Swagger page
-                // options.ValidatorUrl(null);
             });
 
             return app;

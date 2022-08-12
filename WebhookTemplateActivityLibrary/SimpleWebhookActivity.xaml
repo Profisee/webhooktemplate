@@ -62,7 +62,7 @@
     <Sequence.Variables>
       <Variable x:TypeArguments="scg:Dictionary(x:String, x:Object)" Name="Input">
         <Variable.Default>
-          <mca:CSharpValue x:TypeArguments="scg:Dictionary(x:String, x:Object)">new Dictionary&lt;string, object&gt; { { "Code", RecordDataContext.Code } }</mca:CSharpValue>
+          <mca:CSharpValue x:TypeArguments="scg:Dictionary(x:String, x:Object)">new Dictionary&lt;string, object&gt; { { "EntityId", RecordDataContext.EntityId.Id }, { "Code", RecordDataContext.Code } }</mca:CSharpValue>
         </Variable.Default>
       </Variable>
       <Variable x:TypeArguments="x:Int32" Default="0" Name="ProcessingStatus" />
@@ -139,7 +139,7 @@
         </ppwas:LogMessage>
       </ActivityAction>
     </ForEach>
-    <sads:DebugSymbol.Symbol>d1xDOlxEZXZPcHNcUHJvZmlzZWVcV2ViaG9va1RlbXBsYXRlXFdlYmhvb2tUZW1wbGF0ZUFjdGl2aXR5TGlicmFyeVxTaW1wbGVXZWJob29rQWN0aXZpdHkueGFtbBU9A48BDgIBAUELQa4BAgEIRDNENgIBB0cLR4kBAgECSwVRJgIBQlIFWBgCATtZBWkVAgEragV1GAIBIHYFjQEPAgENTgtOaAIBQ1JOUmICAUFVC1WFAQIBPGYLZnECATZhC2FoAgExXAtcYAIBLHILcnACASZtC22FAQIBIXkLeXwCARuAAQmLARwCAQ6IAQ+IAXMCARWDAQ+DAYkBAgEP</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d1xDOlxEZXZPcHNcUHJvZmlzZWVcV2ViaG9va1RlbXBsYXRlXFdlYmhvb2tUZW1wbGF0ZUFjdGl2aXR5TGlicmFyeVxTaW1wbGVXZWJob29rQWN0aXZpdHkueGFtbBU9A48BDgIBAUELQd0BAgEIRDNENgIBB0cLR4kBAgECSwVRJgIBQlIFWBgCATtZBWkVAgEragV1GAIBIHYFjQEPAgENTgtOaAIBQ1JOUmICAUFVC1WFAQIBPGYLZnECATZhC2FoAgExXAtcYAIBLHILcnACASZtC22FAQIBIXkLeXwCARuAAQmLARwCAQ6IAQ+IAXMCARWDAQ+DAYkBAgEP</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>

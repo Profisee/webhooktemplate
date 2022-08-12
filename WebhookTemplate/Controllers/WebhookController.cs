@@ -130,5 +130,24 @@ namespace Profisee.WebhookTemplate.Controllers
 
             return Ok();
         }
+
+        [HttpPost("update-entity-description")]
+        [Authorize]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(WebhookResponseDto))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [SwaggerRequestExample(typeof(Dictionary<string, object>), typeof(WebhookActivityTypedRequestExample))]
+        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(WebhookActivityResponseExample))]
+        public async Task<IActionResult> UpdateEntityDescription([FromBody] WebhookRequestDto dto)
+        {
+            logger.LogInformation($"{this.GetType().Name}.{MethodBase.GetCurrentMethod().Name} - Entry");
+
+            var response = await webhookResponseService.UpdateDescriptionFromRequest(dto);
+
+            logger.LogInformation($"{this.GetType().Name}.{MethodBase.GetCurrentMethod().Name} - Exit");
+
+            return Ok(response);
+        }
     }
 }

@@ -4,8 +4,12 @@
 
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Profisee.WebhookTemplate.Clients;
+using Profisee.WebhookTemplate.Clients.Entities;
+using Profisee.WebhookTemplate.Clients.Records;
 using Profisee.WebhookTemplate.Contexts;
 using Profisee.WebhookTemplate.Dtos;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -15,15 +19,22 @@ namespace Profisee.WebhookTemplate.Services
     /// <summary>
     /// Sample service used to handle incoming webhook requests.
     /// </summary>
-    public class WebhookResponseService : IWebhookResponseService
+    internal class WebhookResponseService : IWebhookResponseService
     {
         private readonly ILogger<IWebhookResponseService> logger;
         private readonly UserContext userContext;
+        private readonly IProfiseeEntitiesClient profiseeEntitiesClient;
+        private readonly IProfiseeRecordsClient profiseeRecordsClient;
 
-        public WebhookResponseService(ILogger<WebhookResponseService> logger, UserContext userContext)
+        public WebhookResponseService(ILogger<WebhookResponseService> logger,
+            UserContext userContext,
+            IProfiseeEntitiesClient profiseeEntitiesClient,
+            IProfiseeRecordsClient profiseeRecordsClient)
         {
             this.logger = logger;
             this.userContext = userContext;
+            this.profiseeEntitiesClient = profiseeEntitiesClient;
+            this.profiseeRecordsClient = profiseeRecordsClient;
         }
 
         /// <summary>
@@ -62,6 +73,7 @@ namespace Profisee.WebhookTemplate.Services
 
             this.logger.LogInformation($"{this.GetType().Name}.{MethodBase.GetCurrentMethod().Name} - Arg Data:");
 
+            this.logger.LogInformation($"EntityId: {dto.EntityId}");
             this.logger.LogInformation($"Code: {dto.Code}");
 
             var result = new WebhookResponseDto
@@ -87,6 +99,55 @@ namespace Profisee.WebhookTemplate.Services
             this.logger.LogInformation($"{this.GetType().Name}.{MethodBase.GetCurrentMethod().Name} - {payloadString}");
 
             this.logger.LogInformation($"{this.GetType().Name}.{MethodBase.GetCurrentMethod().Name} - Exit");
+        }
+
+        public async Task<WebhookResponseDto> UpdateDescriptionFromRequest(WebhookRequestDto dto)
+        {
+            var response = new WebhookResponseDto();
+
+            this.profiseeEntitiesClient.SetAuthorizationHeader(this.userContext.SecurityToken.RawData);
+            this.profiseeRecordsClient.SetAuthorizationHeader(this.userContext.SecurityToken.RawData);
+
+            var getEntityResponse = await this.profiseeEntitiesClient.GetEntityAsync(dto.EntityId);
+
+            if (!getEntityResponse.Success)
+            {
+                var errorDto = getErrorFromProfiseeResponse(getEntityResponse);
+
+                response.ResponsePayload.Add("Error", errorDto);
+                response.ProcessingStatus = -1;
+
+                return response;
+            }
+
+            var description = $"{getEntityResponse.Entity.Identifier.Name} - {dto.Code} was updated by the Webhook using the Profisee Rest API at {DateTime.Now}";
+            var attributeNameValuePair = new Dictionary<string, object>
+            {
+                {"Description", description}
+            };
+
+            var updateRecordResponse = await this.profiseeRecordsClient.UpdateRecordAsync(dto.EntityId, dto.Code, attributeNameValuePair);
+
+            if (!updateRecordResponse.Success)
+            {
+                var errorDto = getErrorFromProfiseeResponse(updateRecordResponse);
+
+                response.ResponsePayload.Add("Error", errorDto);
+                response.ProcessingStatus = -1;
+            }
+
+            return response;
+        }
+
+        private ErrorDto getErrorFromProfiseeResponse(ProfiseeResponse profiseeResponse)
+        {
+            var errorDto = new ErrorDto
+            {
+                Code = (int)profiseeResponse.StatusCode,
+                Message = profiseeResponse.Message
+            };
+
+            return errorDto;
         }
     }
 }

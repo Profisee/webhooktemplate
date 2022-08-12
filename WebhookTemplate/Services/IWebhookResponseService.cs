@@ -15,5 +15,7 @@ namespace Profisee.WebhookTemplate.Services
         Task<WebhookResponseDto> ProcessRequest(WebhookRequestDto dto);
 
         Task ProcessRequest(SubscriberPayloadDto dto);
+
+        Task<WebhookResponseDto> UpdateDescriptionFromRequest(WebhookRequestDto dto);
     }
 }

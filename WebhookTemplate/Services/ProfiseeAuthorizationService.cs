@@ -18,7 +18,7 @@ namespace Profisee.WebhookTemplate.Services
     /// Overrides the default ASP.NET Core authorization service so that more information can be
     /// logged on fail authorization attempts
     /// </summary>
-    public class ProfiseeAuthorizationService : DefaultAuthorizationService, IAuthorizationService
+    internal class ProfiseeAuthorizationService : DefaultAuthorizationService, IAuthorizationService
     {
         private readonly AuthorizationOptions options;
         private readonly IAuthorizationHandlerContextFactory contextFactory;

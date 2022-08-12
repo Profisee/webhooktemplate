@@ -41,10 +41,11 @@ namespace Profisee.WebhookTemplate
                 .AddSerilogLogging(configuration, appsettings)  // Adds logging
                 .AddDefaultMvcServices()                        // Adds default ASPNET Core MVC services
                 .AddSwaggerDefaults()                           // Adds Swagger/Swashbuckle configuration
-                .AddWebhookTemplateServices()                   // Adds our custom services
                 .AddJwtAuthentication(appsettings)              // Adds JWT authentication
+                .AddScoped<UserContext>()                       // Adds user context provided by UserContextProvider middleware
                 .AddProfiseeAuthorization()                     // Adds custom authorization handler
-                .AddScoped<UserContext>();                      // Adds user context provided by UserContextProvider middleware
+                .AddProfiseeClients()                           // Adds typed http clients to communicate with the Profisee REST API
+                .AddWebhookTemplateServices();                  // Adds our custom services
         }
 
         public void Configure(ILogger<Startup> logger,
