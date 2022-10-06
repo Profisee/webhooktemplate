@@ -20,7 +20,7 @@ namespace Profisee.WebhookTemplate.Extensions.Swagger
             app.UseSwaggerUI(options =>
             {
                 var description = provider.ApiVersionDescriptions.First();
-                var url = $"/swagger/{description.GroupName}/swagger.json";
+                var url = $"./swagger/{description.GroupName}/swagger.json";
                 var name = description.GroupName.ToUpperInvariant();
                 options.SwaggerEndpoint(url, name);
 
