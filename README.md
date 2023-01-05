@@ -69,13 +69,14 @@ For the Webhook Workflow Activity, any [nonprimitive](https://learn.microsoft.co
 
 ### After 2023.R1
 
-Starting in 2023.R1, these JArrays and JObjects are converted to List<object> or Dictionary<string, object> respectively by the Webhook Activity. Further conversion may need to be done via casting for further use in the workflow. However, there is no risk of the serialization errors from pervious releases.
+Starting in 2023.R1, these JArrays and JObjects are converted to List&lt;object&gt; or Dictionary<string, object> respectively by the Webhook Activity. Further conversion may need to be done via casting for further use in the workflow. However, there is no risk of the serialization errors from pervious releases.
 
 ### Further Recommendations
 
-It is recommended that only primitives, List<object>, and Dictionary<string, object> are returned as a part of the ResponsePayload with the objects within the list and dictionaries also limited to primitives.
+It is recommended that only primitives, List&lt;object&gt;, and Dictionary<string, object> are returned as a part of the ResponsePayload with the objects within the list and dictionaries also limited to primitives.
 
-For example:
+For example: 
+
 **Good**
 ```
 var responsePayload = new Dictionary<string, object> {
@@ -92,7 +93,7 @@ var responsePayload = new Dictionary<string, object> {
 ```
 var responsePayload = new Dictionary<string, object> {
     { "approvers", new List<string> { new User { Name = "Jimmy", Id = 1 } } },
-    { "", new RecordData { Count = 5 } },
+    { "recordCount", new RecordData { Count = 5 } },
     { "myDictionary", new Dictionary<string, string> {
         { "key1", new ValueHolder { Value = "value1" } },
         { "key2", new ValueHolder { Value = "value2" } }
