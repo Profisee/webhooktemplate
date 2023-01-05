@@ -61,6 +61,45 @@ Three endpoints are available in this application. They operate in the following
 - "profisee/v1/webhook/activity-typed" - This endpoint demonstrates receiving a typed object in the form of WebhookRequestDto. This binds the content received in the http request body to the WebhookRequestDto object, and then outputs the code value. It is best practice to use typed objects when receiving incoming requests from the Profisee service, as it is easier to build validation logic and error handling around typed objects than a generic dictionary representing an object.
 - "profisee/v1/webhook/subscriber" - This endpoint is to be used with eventing. This endpoint receives a SubscriberPayloadDto containing information about the event that occured.
 
+## Handling Response Objects
+
+### Prior to 2023.R1
+
+For the Webhook Workflow Activity, any [nonprimitive](https://learn.microsoft.com/en-us/dotnet/api/system.type.isprimitive?view=net-6.0) objects returned as a part of the ResponsePayload come back either as a JArray (any array or list) or a JObject (any complex object or dictionary). If the ResponsePayload contains any of these objects and the workflow reaches a Contribution or Approval Task Activity, the workflow will experience serialization errors. To prevent this, these objects will have to be converted using an Assign Activity by calling [ToObject](https://www.newtonsoft.com/json/help/html/ToObjectType.htm) on them back to the ResponsePayload.
+
+### After 2023.R1
+
+Starting in 2023.R1, these JArrays and JObjects are converted to List<object> or Dictionary<string, object> respectively by the Webhook Activity. Further conversion may need to be done via casting for further use in the workflow. However, there is no risk of the serialization errors from pervious releases.
+
+### Further Recommendations
+
+It is recommended that only primitives, List<object>, and Dictionary<string, object> are returned as a part of the ResponsePayload with the objects within the list and dictionaries also limited to primitives.
+
+For example:
+**Good**
+```
+var responsePayload = new Dictionary<string, object> {
+    { "approvers", new List<string> { "user1", "user2" } },
+    { "recordCount", 5 },
+    { "myDictionary", new Dictionary<string, string> {
+        { "key1", "value1" },
+        { "key2", "value2" }
+    } }
+};
+```
+
+**Bad**
+```
+var responsePayload = new Dictionary<string, object> {
+    { "approvers", new List<string> { new User { Name = "Jimmy", Id = 1 } } },
+    { "", new RecordData { Count = 5 } },
+    { "myDictionary", new Dictionary<string, string> {
+        { "key1", new ValueHolder { Value = "value1" } },
+        { "key2", new ValueHolder { Value = "value2" } }
+    } }
+};
+```
+
 ## Additional Notes
 
 Files to note:
