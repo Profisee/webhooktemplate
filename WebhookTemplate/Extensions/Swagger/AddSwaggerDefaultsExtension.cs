@@ -12,7 +12,7 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Profisee.WebhookTemplate.Extensions.Swagger
+namespace Profisee.WebhookTemplate.WebApp.Extensions.Swagger
 {
     internal static class AddSwaggerDefaultsExtension
     {

@@ -12,7 +12,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Profisee.WebhookTemplate.Services
+namespace Profisee.WebhookTemplate.WebApp.Services
 {
     /// <summary>
     /// Overrides the default ASP.NET Core authorization service so that more information can be

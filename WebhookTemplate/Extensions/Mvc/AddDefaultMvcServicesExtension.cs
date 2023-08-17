@@ -5,7 +5,7 @@
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Profisee.WebhookTemplate.Extensions.Mvc
+namespace Profisee.WebhookTemplate.WebApp.Extensions.Mvc
 {
     internal static class AddDefaultMvcServicesExtension
     {

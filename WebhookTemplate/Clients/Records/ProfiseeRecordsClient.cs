@@ -8,9 +8,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Profisee.WebhookTemplate.Configuration;
+using Profisee.WebhookTemplate.WebApp.Configuration;
 
-namespace Profisee.WebhookTemplate.Clients.Records
+namespace Profisee.WebhookTemplate.WebApp.Clients.Records
 {
     internal class ProfiseeRecordsClient : BaseProfiseeClient, IProfiseeRecordsClient
     {

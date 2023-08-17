@@ -4,9 +4,9 @@
 
 using System;
 using System.Threading.Tasks;
-using Profisee.WebhookTemplate.Clients.Entities.Responses;
+using Profisee.WebhookTemplate.WebApp.Clients.Entities.Responses;
 
-namespace Profisee.WebhookTemplate.Clients.Entities
+namespace Profisee.WebhookTemplate.WebApp.Clients.Entities
 {
     internal interface IProfiseeEntitiesClient : IBaseProfiseeClient
     {

@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Profisee.WebhookTemplate.Clients.Records
+namespace Profisee.WebhookTemplate.WebApp.Clients.Records
 {
     internal interface IProfiseeRecordsClient : IBaseProfiseeClient
     {

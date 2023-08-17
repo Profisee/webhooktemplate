@@ -3,9 +3,9 @@
 //==============================================================================
 
 using Microsoft.Extensions.DependencyInjection;
-using Profisee.WebhookTemplate.Services;
+using Profisee.WebhookTemplate.WebApp.Services;
 
-namespace Profisee.WebhookTemplate.Extensions.Services
+namespace Profisee.WebhookTemplate.WebApp.Extensions.Services
 {
     internal static class AddWebhookTemplateServicesExtension
     {

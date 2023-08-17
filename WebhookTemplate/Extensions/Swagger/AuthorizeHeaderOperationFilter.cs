@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 
-namespace Profisee.WebhookTemplate.Extensions.Swagger
+namespace Profisee.WebhookTemplate.WebApp.Extensions.Swagger
 {
     public class AuthorizeHeaderOperationFilter : IOperationFilter
     {

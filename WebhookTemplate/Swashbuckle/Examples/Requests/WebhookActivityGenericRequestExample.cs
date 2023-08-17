@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Swashbuckle.AspNetCore.Filters;
 
-namespace Profisee.WebhookTemplate.Swashbuckle.Examples.Requests
+namespace Profisee.WebhookTemplate.WebApp.Swashbuckle.Examples.Requests
 {
     public class WebhookActivityGenericRequestExample : IExamplesProvider<Dictionary<string, object>>
     {

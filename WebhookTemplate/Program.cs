@@ -9,7 +9,7 @@ using Serilog;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Profisee.WebhookTemplate
+namespace Profisee.WebhookTemplate.WebApp
 {
     public class Program
     {

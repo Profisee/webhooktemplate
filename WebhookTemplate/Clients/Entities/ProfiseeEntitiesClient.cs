@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Profisee.WebhookTemplate.Clients.Dtos;
-using Profisee.WebhookTemplate.Clients.Entities.Responses;
-using Profisee.WebhookTemplate.Configuration;
+using Profisee.WebhookTemplate.WebApp.Clients.Dtos;
+using Profisee.WebhookTemplate.WebApp.Clients.Entities.Responses;
+using Profisee.WebhookTemplate.WebApp.Configuration;
 
-namespace Profisee.WebhookTemplate.Clients.Entities
+namespace Profisee.WebhookTemplate.WebApp.Clients.Entities
 {
     internal class ProfiseeEntitiesClient : BaseProfiseeClient, IProfiseeEntitiesClient
     {

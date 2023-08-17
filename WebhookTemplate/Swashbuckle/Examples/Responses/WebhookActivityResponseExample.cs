@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Profisee.WebhookTemplate.Dtos;
+using Profisee.WebhookTemplate.WebApp.Dtos;
 using Swashbuckle.AspNetCore.Filters;
 
-namespace Profisee.WebhookTemplate.Swashbuckle.Examples.Responses
+namespace Profisee.WebhookTemplate.WebApp.Swashbuckle.Examples.Responses
 {
     public class WebhookActivityResponseExample : IExamplesProvider<WebhookResponseDto>
     {

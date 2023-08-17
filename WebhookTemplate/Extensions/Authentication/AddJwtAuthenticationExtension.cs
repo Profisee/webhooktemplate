@@ -4,9 +4,9 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Profisee.WebhookTemplate.Configuration;
+using Profisee.WebhookTemplate.WebApp.Configuration;
 
-namespace Profisee.WebhookTemplate.Extensions.Authentication
+namespace Profisee.WebhookTemplate.WebApp.Extensions.Authentication
 {
     internal static class AddJwtAuthenticationExtension
     {

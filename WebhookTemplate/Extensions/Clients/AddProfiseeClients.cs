@@ -3,10 +3,10 @@
 //==============================================================================
 
 using Microsoft.Extensions.DependencyInjection;
-using Profisee.WebhookTemplate.Clients.Entities;
-using Profisee.WebhookTemplate.Clients.Records;
+using Profisee.WebhookTemplate.WebApp.Clients.Entities;
+using Profisee.WebhookTemplate.WebApp.Clients.Records;
 
-namespace Profisee.WebhookTemplate.Extensions.Authentication
+namespace Profisee.WebhookTemplate.WebApp.Extensions.Authentication
 {
     internal static class AddProfiseeClientsExtension
     {

@@ -6,7 +6,7 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Linq;
 
-namespace Profisee.WebhookTemplate.Extensions.Swagger
+namespace Profisee.WebhookTemplate.WebApp.Extensions.Swagger
 {
     internal class SwaggerDefaultValues : IOperationFilter
     {

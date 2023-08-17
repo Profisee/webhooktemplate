@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Profisee.WebhookTemplate.Extensions.Swagger
+namespace Profisee.WebhookTemplate.WebApp.Extensions.Swagger
 {
     internal class SwaggerOptions : IConfigureOptions<SwaggerGenOptions>
     {

@@ -4,13 +4,13 @@
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Profisee.WebhookTemplate.Contexts;
+using Profisee.WebhookTemplate.WebApp.Contexts;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Profisee.WebhookTemplate.Middleware
+namespace Profisee.WebhookTemplate.WebApp.Middleware
 {
     /// <summary>
     /// Middleware to populate UserContext class during the request pipeline,

@@ -6,7 +6,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 
-namespace Profisee.WebhookTemplate.Contexts
+namespace Profisee.WebhookTemplate.WebApp.Contexts
 {
     /// <summary>
     /// Encapsulates user information that is captured from the HttpContext during message calls

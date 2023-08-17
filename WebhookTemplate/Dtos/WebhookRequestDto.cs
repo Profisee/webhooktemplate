@@ -5,7 +5,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Profisee.WebhookTemplate.Dtos
+namespace Profisee.WebhookTemplate.WebApp.Dtos
 {
     /// <summary>
     /// Simple Data Transfer Object (dto) for receiving a typed webhook request payload.

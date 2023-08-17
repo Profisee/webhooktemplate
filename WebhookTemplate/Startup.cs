@@ -10,17 +10,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using Profisee.WebhookTemplate.Extensions.AppBuilder;
-using Profisee.WebhookTemplate.Extensions.Authentication;
-using Profisee.WebhookTemplate.Extensions.Logging;
-using Profisee.WebhookTemplate.Extensions.Mvc;
-using Profisee.WebhookTemplate.Extensions.Services;
-using Profisee.WebhookTemplate.Extensions.Swagger;
-using Profisee.WebhookTemplate.Middleware;
-using Profisee.WebhookTemplate.Configuration;
-using Profisee.WebhookTemplate.Contexts;
+using Profisee.WebhookTemplate.WebApp.Extensions.AppBuilder;
+using Profisee.WebhookTemplate.WebApp.Extensions.Authentication;
+using Profisee.WebhookTemplate.WebApp.Extensions.Logging;
+using Profisee.WebhookTemplate.WebApp.Extensions.Mvc;
+using Profisee.WebhookTemplate.WebApp.Extensions.Services;
+using Profisee.WebhookTemplate.WebApp.Extensions.Swagger;
+using Profisee.WebhookTemplate.WebApp.Middleware;
+using Profisee.WebhookTemplate.WebApp.Configuration;
+using Profisee.WebhookTemplate.WebApp.Contexts;
 
-namespace Profisee.WebhookTemplate
+namespace Profisee.WebhookTemplate.WebApp
 {
     internal class Startup
     {

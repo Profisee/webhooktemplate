@@ -2,7 +2,7 @@
 // Copyright (c) Profisee Corporation. All Rights Reserved.
 //==============================================================================
 
-namespace Profisee.WebhookTemplate.Dtos
+namespace Profisee.WebhookTemplate.WebApp.Dtos
 {
     internal  class ErrorDto
     {

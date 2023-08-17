@@ -12,9 +12,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Profisee.WebhookTemplate.Configuration;
+using Profisee.WebhookTemplate.WebApp.Configuration;
 
-namespace Profisee.WebhookTemplate.Clients
+namespace Profisee.WebhookTemplate.WebApp.Clients
 {
     internal abstract class BaseProfiseeClient : IBaseProfiseeClient
     {

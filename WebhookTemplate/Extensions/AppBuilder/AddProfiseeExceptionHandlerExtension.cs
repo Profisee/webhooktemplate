@@ -10,7 +10,7 @@ using System.Net.Mime;
 using System.Text;
 using Serilog;
 
-namespace Profisee.WebhookTemplate.Extensions.AppBuilder
+namespace Profisee.WebhookTemplate.WebApp.Extensions.AppBuilder
 {
     /// <summary>
     /// Adds a page that outputs unhandled exception details

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32602.215
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebhookTemplate", "WebhookTemplate\WebhookTemplate.csproj", "{E9D0FF85-C4BC-4FA0-A66E-05DC870C2081}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebhookTemplate.WebApp", "WebhookTemplate\WebhookTemplate.WebApp.csproj", "{E9D0FF85-C4BC-4FA0-A66E-05DC870C2081}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebhookTemplateActivityLibrary", "WebhookTemplateActivityLibrary\WebhookTemplateActivityLibrary.csproj", "{61750C24-45F6-4279-B01D-518D5D91EA83}"
 EndProject

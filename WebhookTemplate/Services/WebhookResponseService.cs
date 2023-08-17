@@ -4,17 +4,17 @@
 
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Profisee.WebhookTemplate.Clients;
-using Profisee.WebhookTemplate.Clients.Entities;
-using Profisee.WebhookTemplate.Clients.Records;
-using Profisee.WebhookTemplate.Contexts;
-using Profisee.WebhookTemplate.Dtos;
+using Profisee.WebhookTemplate.WebApp.Clients;
+using Profisee.WebhookTemplate.WebApp.Clients.Entities;
+using Profisee.WebhookTemplate.WebApp.Clients.Records;
+using Profisee.WebhookTemplate.WebApp.Contexts;
+using Profisee.WebhookTemplate.WebApp.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Profisee.WebhookTemplate.Services
+namespace Profisee.WebhookTemplate.WebApp.Services
 {
     /// <summary>
     /// Sample service used to handle incoming webhook requests.

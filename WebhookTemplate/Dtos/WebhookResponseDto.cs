@@ -5,7 +5,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Profisee.WebhookTemplate.Dtos
+namespace Profisee.WebhookTemplate.WebApp.Dtos
 {
     /// <summary>
     /// Simple Data Transfer Object (dto) for responding to a web hook request.

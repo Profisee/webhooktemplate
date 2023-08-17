@@ -2,9 +2,9 @@
 // Copyright (c) Profisee Corporation. All Rights Reserved.
 //==============================================================================
 
-using Profisee.WebhookTemplate.Clients.Dtos;
+using Profisee.WebhookTemplate.WebApp.Clients.Dtos;
 
-namespace Profisee.WebhookTemplate.Clients.Entities.Responses
+namespace Profisee.WebhookTemplate.WebApp.Clients.Entities.Responses
 {
     internal class GetEntityResponse : ProfiseeResponse
     {

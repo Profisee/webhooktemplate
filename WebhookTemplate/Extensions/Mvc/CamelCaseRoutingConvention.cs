@@ -4,7 +4,7 @@
 
 using Microsoft.AspNetCore.Routing;
 
-namespace Profisee.WebhookTemplate.Extensions.Mvc
+namespace Profisee.WebhookTemplate.WebApp.Extensions.Mvc
 {
     internal class CamelCaseRoutingConvention : IOutboundParameterTransformer
     {

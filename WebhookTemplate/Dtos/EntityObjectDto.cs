@@ -5,7 +5,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Profisee.WebhookTemplate.Dtos
+namespace Profisee.WebhookTemplate.WebApp.Dtos
 {
     /// <summary>
     /// The part of the Subscriber payload that contains information about the related entity.

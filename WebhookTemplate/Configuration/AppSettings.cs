@@ -5,7 +5,7 @@
 using Newtonsoft.Json;
 using System;
 
-namespace Profisee.WebhookTemplate.Configuration
+namespace Profisee.WebhookTemplate.WebApp.Configuration
 {
     /// <summary>
     /// Application configuration object that binds to the specified section in StartUp.cs IConfiguration object

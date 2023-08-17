@@ -8,7 +8,7 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Linq;
 using System.Reflection;
 
-namespace Profisee.WebhookTemplate.Extensions.Swagger
+namespace Profisee.WebhookTemplate.WebApp.Extensions.Swagger
 {
     internal static class UseSwaggerDefaultsExtension
     {

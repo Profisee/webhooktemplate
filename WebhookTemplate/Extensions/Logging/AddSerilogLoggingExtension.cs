@@ -4,14 +4,14 @@
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Profisee.WebhookTemplate.Configuration;
+using Profisee.WebhookTemplate.WebApp.Configuration;
 using Serilog;
 using Serilog.Debugging;
 using Serilog.Sinks.MSSqlServer;
 using System;
 using System.IO;
 
-namespace Profisee.WebhookTemplate.Extensions.Logging
+namespace Profisee.WebhookTemplate.WebApp.Extensions.Logging
 {
     internal static class AddSerilogLoggingExtension
     {

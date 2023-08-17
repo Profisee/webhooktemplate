@@ -4,7 +4,7 @@
 
 using System.Net;
 
-namespace Profisee.WebhookTemplate.Clients
+namespace Profisee.WebhookTemplate.WebApp.Clients
 {
     internal class ProfiseeResponse
     {

@@ -2,11 +2,11 @@
 // Copyright (c) Profisee Corporation. All Rights Reserved.
 //==============================================================================
 
-using Profisee.WebhookTemplate.Dtos;
+using Profisee.WebhookTemplate.WebApp.Dtos;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Profisee.WebhookTemplate.Services
+namespace Profisee.WebhookTemplate.WebApp.Services
 {
     public interface IWebhookResponseService
     {

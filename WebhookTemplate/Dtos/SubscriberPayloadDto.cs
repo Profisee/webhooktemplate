@@ -4,7 +4,7 @@
 
 using System.Runtime.Serialization;
 
-namespace Profisee.WebhookTemplate.Dtos
+namespace Profisee.WebhookTemplate.WebApp.Dtos
 {
     /// <summary>
     /// The payload from the triggering of an event in the Profisee Service.
