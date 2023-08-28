@@ -1,6 +1,6 @@
-using System;
-using Profisee.WebhookTemplate.WebApp.Dtos;
+using Profisee.WebhookTemplate.Common.Dtos;
 using Swashbuckle.AspNetCore.Filters;
+using System;
 
 namespace Profisee.WebhookTemplate.WebApp.Swashbuckle.Examples.Requests
 {

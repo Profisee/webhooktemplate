@@ -1,12 +1,8 @@
-//==============================================================================
-// Copyright (c) Profisee Corporation. All Rights Reserved.
-//==============================================================================
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Profisee.WebhookTemplate.WebApp.Dtos;
+using Profisee.WebhookTemplate.Common.Dtos;
 using Profisee.WebhookTemplate.WebApp.Services;
 using Profisee.WebhookTemplate.WebApp.Swashbuckle.Examples.Requests;
 using Profisee.WebhookTemplate.WebApp.Swashbuckle.Examples.Responses;

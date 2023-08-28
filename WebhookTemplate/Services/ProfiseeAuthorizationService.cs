@@ -1,7 +1,3 @@
-//==============================================================================
-// Copyright (c) Profisee Corporation. All Rights Reserved.
-//==============================================================================
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -24,7 +20,6 @@ namespace Profisee.WebhookTemplate.WebApp.Services
         private readonly IAuthorizationHandlerContextFactory contextFactory;
         private readonly IAuthorizationHandlerProvider handlers;
         private readonly IAuthorizationEvaluator evaluator;
-        private readonly IAuthorizationPolicyProvider policyProvider;
         private readonly ILogger logger;
 
         public ProfiseeAuthorizationService(IAuthorizationPolicyProvider policyProvider,
@@ -37,7 +32,6 @@ namespace Profisee.WebhookTemplate.WebApp.Services
         {
             this.options = options.Value;
             this.handlers = handlers;
-            this.policyProvider = policyProvider;
             this.logger = logger;
             this.evaluator = evaluator;
             this.contextFactory = contextFactory;

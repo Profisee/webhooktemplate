@@ -1,6 +1,6 @@
-using System.Collections.Generic;
-using Profisee.WebhookTemplate.WebApp.Dtos;
+using Profisee.WebhookTemplate.Common.Dtos;
 using Swashbuckle.AspNetCore.Filters;
+using System.Collections.Generic;
 
 namespace Profisee.WebhookTemplate.WebApp.Swashbuckle.Examples.Responses
 {
