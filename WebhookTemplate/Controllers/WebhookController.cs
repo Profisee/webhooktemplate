@@ -1,22 +1,18 @@
-//==============================================================================
-// Copyright (c) Profisee Corporation. All Rights Reserved.
-//==============================================================================
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Profisee.WebhookTemplate.Dtos;
-using Profisee.WebhookTemplate.Services;
-using Profisee.WebhookTemplate.Swashbuckle.Examples.Requests;
-using Profisee.WebhookTemplate.Swashbuckle.Examples.Responses;
+using Profisee.WebhookTemplate.Common.Dtos;
+using Profisee.WebhookTemplate.WebApp.Services;
+using Profisee.WebhookTemplate.WebApp.Swashbuckle.Examples.Requests;
+using Profisee.WebhookTemplate.WebApp.Swashbuckle.Examples.Responses;
 using Swashbuckle.AspNetCore.Filters;
 using System.Collections.Generic;
 using System.Net.Mime;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Profisee.WebhookTemplate.Controllers
+namespace Profisee.WebhookTemplate.WebApp.Controllers
 {
     [ApiController]
     [ApiVersion("1.0")]

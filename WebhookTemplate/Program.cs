@@ -1,7 +1,3 @@
-//==============================================================================
-// Copyright (c) Profisee Corporation. All Rights Reserved.
-//==============================================================================
-
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -9,7 +5,7 @@ using Serilog;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Profisee.WebhookTemplate
+namespace Profisee.WebhookTemplate.WebApp
 {
     public class Program
     {

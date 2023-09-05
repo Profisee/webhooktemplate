@@ -1,8 +1,8 @@
-using System;
-using Profisee.WebhookTemplate.Dtos;
+using Profisee.WebhookTemplate.Common.Dtos;
 using Swashbuckle.AspNetCore.Filters;
+using System;
 
-namespace Profisee.WebhookTemplate.Swashbuckle.Examples.Requests
+namespace Profisee.WebhookTemplate.WebApp.Swashbuckle.Examples.Requests
 {
     public class WebhookSubscriberRequestExample : IExamplesProvider<SubscriberPayloadDto>
     {

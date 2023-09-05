@@ -1,7 +1,3 @@
-//==============================================================================
-// Copyright (c) Profisee Corporation. All Rights Reserved.
-//==============================================================================
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -9,18 +5,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Profisee.WebhookTemplate.Common.Clients.Extensions;
+using Profisee.WebhookTemplate.Common.Configuration;
+using Profisee.WebhookTemplate.WebApp.Extensions;
 using System;
-using Profisee.WebhookTemplate.Extensions.AppBuilder;
-using Profisee.WebhookTemplate.Extensions.Authentication;
-using Profisee.WebhookTemplate.Extensions.Logging;
-using Profisee.WebhookTemplate.Extensions.Mvc;
-using Profisee.WebhookTemplate.Extensions.Services;
-using Profisee.WebhookTemplate.Extensions.Swagger;
-using Profisee.WebhookTemplate.Middleware;
-using Profisee.WebhookTemplate.Configuration;
-using Profisee.WebhookTemplate.Contexts;
+using WebhookTemplate.WebApp.Extensions;
+using WebhookTemplate.WebApp.Swashbuckle;
 
-namespace Profisee.WebhookTemplate
+namespace Profisee.WebhookTemplate.WebApp
 {
     internal class Startup
     {
@@ -42,7 +34,7 @@ namespace Profisee.WebhookTemplate
                 .AddDefaultMvcServices()                        // Adds default ASPNET Core MVC services
                 .AddSwaggerDefaults()                           // Adds Swagger/Swashbuckle configuration
                 .AddJwtAuthentication(appsettings)              // Adds JWT authentication
-                .AddScoped<UserContext>()                       // Adds user context provided by UserContextProvider middleware
+                .AddUserContextServices()                       // Adds user context provided by UserContextProvider middleware
                 .AddProfiseeAuthorization()                     // Adds custom authorization handler
                 .AddProfiseeClients()                           // Adds typed http clients to communicate with the Profisee REST API
                 .AddWebhookTemplateServices();                  // Adds our custom services
@@ -62,10 +54,7 @@ namespace Profisee.WebhookTemplate
 
             // For Swagger
             appBuilder.UseSwaggerDefaults(versionDescriptionProvider);
-            appBuilder.UseStaticFiles();
-
-            // Custom middleware to initialize user context information
-            appBuilder.UseMiddleware<UserContextProvider>();
+            appBuilder.UseStaticFiles();;
 
             // Standard ASP.NET Core configuration calls.
             // Note that UseAuthentication and UseAuthorization must be called
