@@ -76,7 +76,7 @@ public class UpdateEntityDescription
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var d = getDisco(config, client);
+            var d = getDiscoveryDocument(config, client);
             tokenHandler.ValidateToken(authorizationHeader, getTokenValidationParameters(d), out SecurityToken validatedToken);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
                 JwtBearerDefaults.AuthenticationScheme,
@@ -108,7 +108,7 @@ public class UpdateEntityDescription
         return new OkObjectResult(msg);
 
     }
-    public DiscoveryDocumentResponse getDisco(IConfigurationRoot config, HttpClient client)
+    public DiscoveryDocumentResponse getDiscoveryDocument(IConfigurationRoot config, HttpClient client)
     {
         return client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
         {
@@ -149,6 +149,7 @@ public class UpdateEntityDescription
             RoleClaimType = JwtClaimTypes.Role,
 
             RequireSignedTokens = true
+            //set a clock skew here if needed
         };
 
         return parameters;
