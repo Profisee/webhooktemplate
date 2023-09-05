@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebhookTemplate.WebApp", "W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebhookTemplateActivityLibrary", "WebhookTemplateActivityLibrary\WebhookTemplateActivityLibrary.csproj", "{61750C24-45F6-4279-B01D-518D5D91EA83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebhookTemplate.AzureFunction", "WebhookTemplate.AzureFunction\WebhookTemplate.AzureFunction.csproj", "{D0EDEA00-7BB0-4A72-AA4C-A794E41F6A37}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebhookTemplate.AzureFunction", "WebhookTemplate.AzureFunction\WebhookTemplate.AzureFunction.csproj", "{D0EDEA00-7BB0-4A72-AA4C-A794E41F6A37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebhookTemplate.Common", "WebhookTemplate.Common\WebhookTemplate.Common.csproj", "{1029D0F3-6A92-4923-9D04-94DDD0447167}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebhookTemplate.Common", "WebhookTemplate.Common\WebhookTemplate.Common.csproj", "{1029D0F3-6A92-4923-9D04-94DDD0447167}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
