@@ -1,5 +1,6 @@
-using IdentityModel.Client;
 using IdentityModel;
+using IdentityModel.Client;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -8,53 +9,52 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using Profisee.WebhookTemplate.Common.Clients;
+using Profisee.WebhookTemplate.Common.Clients.Dtos;
+using Profisee.WebhookTemplate.Common.Clients.Entities.Responses;
+using Profisee.WebhookTemplate.Common.Configuration;
 using Profisee.WebhookTemplate.Common.Dtos;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Net.Http;
-using System.Security.Cryptography;
-using System.Text.Json;
-using System.Threading.Tasks;
 using System.Net.Http.Headers;
-using Profisee.WebhookTemplate.Common.Configuration;
-using Profisee.WebhookTemplate.Common.Clients.Dtos;
-using Profisee.WebhookTemplate.Common.Clients.Entities.Responses;
-using Profisee.WebhookTemplate.Common.Clients;
 using System.Net.Mime;
+using System.Security.Cryptography;
 using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Threading.Tasks;
+using WebhookTemplate.AzureFunction.Payloads;
 
 namespace WebhookTemplate.AzureFunction.Functions;
 
 public class Subscriber
 {
+    private static HttpClient client;
+    private static IConfigurationRoot config;
+
+    static Subscriber()
+    {
+        config = new ConfigurationBuilder()
+                 .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
+                 .AddEnvironmentVariables()
+                 .Build();
+
+        client = new HttpClient();
+        var url = config.GetValue<string>("ServiceUrl") + "rest/";
+        client.BaseAddress = new Uri(url);
+    }
+
     [FunctionName("Subscriber")]
     public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
          ILogger log)
     {
-        var config = new ConfigurationBuilder()
-                 .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
-                 .AddEnvironmentVariables()
-                 .Build();
-        var client = new HttpClient(this.getHttpHandler());
-        var url = config.GetValue<string>("ServiceUrl") + "rest/";
-        client.BaseAddress = new Uri(url);
         string msg;
         try
         {
-             msg = $"ActivityGeneric HTTP trigger function processed a request.";
+            msg = $"Subsciber HTTP trigger function processed a request.";
 
             log.LogInformation(msg);
-
-            msg = $"Call came  from - {req.Headers["X-Forwarded-For"]}";
-            log.LogInformation(msg);
-
-            foreach (var item in req.Headers)
-            {
-                log.LogInformation($"Header = {item.Key} Value = {item.Value} \n");
-            }
 
             string authorizationHeader = req.Headers["Authorization"];
             log.LogInformation(authorizationHeader);
@@ -62,13 +62,14 @@ public class Subscriber
             {
                 msg = "Authorization header is null";
                 log.LogInformation(msg);
-                return new OkObjectResult(msg);
+                return new OkResult();
             }
-            authorizationHeader = authorizationHeader.Remove(0, 7);
+            authorizationHeader = authorizationHeader.Replace("Bearer ", "");
 
             if (string.IsNullOrEmpty(authorizationHeader))
             {
                 log.LogInformation("NO Authorization header");
+                return new OkResult();
             }
             else
             {
@@ -76,55 +77,69 @@ public class Subscriber
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var d = getDiscoveryDocument(config, client);
-            tokenHandler.ValidateToken(authorizationHeader, getTokenValidationParameters(d), out SecurityToken validatedToken);
+            var discoveryDocument = await getDiscoveryDocument();
+            try
+            {
+                tokenHandler.ValidateToken(authorizationHeader,
+                getTokenValidationParameters(discoveryDocument),
+                out SecurityToken validatedToken);
+            }
+            catch (Exception ex)
+            {
+                msg = "Token failed validation";
+                log.LogInformation(msg);
+                return new UnauthorizedResult();
+            }
+
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
                 JwtBearerDefaults.AuthenticationScheme,
-                 authorizationHeader);
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                authorizationHeader);
+
+            using var reader = new StreamReader(req.Body);
+            string requestBody = await reader.ReadToEndAsync();
 
             if (string.IsNullOrEmpty(requestBody))
             {
-                log.LogInformation($"Body is null or empty");
+                msg = "Body is null or empty";
+                log.LogInformation(msg);
                 return new OkObjectResult(msg);
             }
 
             log.LogInformation($"Body: {requestBody}");
 
-            Payload data = JsonConvert.DeserializeObject<Payload>(requestBody);
+            SubscriberPayload data = JsonConvert.DeserializeObject<SubscriberPayload>(requestBody);
+
             log.LogInformation($"EntityObject: {data.EntityObject}");
             log.LogInformation($"MemberCode: {data.MemberCode}");
             log.LogInformation($"Transaction: {data.Transaction}");
             log.LogInformation($"UserName: {data.UserName}");
             log.LogInformation($"EventName: {data.EventName}");
-            var webhookResponse = UpdateDescriptionFromRequest(data, req, client, config, log);
+
+            updateDescriptionFromRequest(data, req, config, log);
 
             return new OkResult();
         }
         catch (Exception ex)
         {
-            log.LogInformation(ex.StackTrace);
             log.LogInformation(ex.Message);
+            log.LogInformation(ex.StackTrace);
             msg = ex.Message;
+            return new OkObjectResult(msg);
         }
-
-        return new OkObjectResult(msg);
-
     }
-    public DiscoveryDocumentResponse getDiscoveryDocument(IConfigurationRoot config, HttpClient client)
+
+    private async Task<DiscoveryDocumentResponse> getDiscoveryDocument()
     {
-        return client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
+        return await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
         {
-
+            
             Address = config.GetValue<string>("ServiceUrl") + "auth",
+            
             Policy = { RequireHttps = false, ValidateIssuerName = false }
-        }).Result;
+       
+        });
     }
-    private HttpClientHandler getHttpHandler()
-    {
-        var handler = new HttpClientHandler { UseDefaultCredentials = true };
-        return handler;
-    }
+
     public TokenValidationParameters getTokenValidationParameters(DiscoveryDocumentResponse disco)
     {
         var keys = new List<SecurityKey>();
@@ -156,74 +171,44 @@ public class Subscriber
 
         return parameters;
     }
-    public class Payload
-    {
-        public Identifier EntityObject { get; set; }
-        public string MemberCode { get; set; }
-        public int Transaction { get; set; }
-        public string UserName { get; set; }
-        public string EventName { get; set; }
-    }
 
-    public class Identifier
+    private async void updateDescriptionFromRequest(SubscriberPayload payload, HttpRequest req, IConfigurationRoot config, ILogger log)
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-
-        public override string ToString()
-        {
-            return $"Id: {this.Id}  Name: {this.Name}";
-        }
-    }
-    public class SubscriberResponse
-    {
-        [JsonProperty(Required = Required.Default)]
-        public int ProcessingStatus { get; set; }
-        
-        [JsonProperty(Required = Required.Default)]
-        public Dictionary<string, object> ResponsePayload { get; set; }
-    }
-    public async Task<SubscriberResponse> UpdateDescriptionFromRequest(Payload payload, HttpRequest req, HttpClient client, IConfigurationRoot config, ILogger log)
-    {
-        var response = new SubscriberResponse();
         var appsettings = config.Get<AppSettings>();
 
-        var getEntityResponse = await GetEntityAsync(payload.EntityObject.Id, client);
+        var getEntityResponse = await getEntityAsync(payload.EntityObject.Id);
 
         if (!getEntityResponse.Success)
         {
             var errorDto = getErrorFromProfiseeResponse(getEntityResponse);
 
-            response.ResponsePayload.Add("Error", errorDto);
-            response.ProcessingStatus = -1;
+            log.LogInformation($"Error: {errorDto}");
 
-            return response;
         }
 
-        var description = $"{getEntityResponse.Entity.Identifier.Name} - {payload.MemberCode} was updated by the Webhook using the Profisee Rest API at {DateTime.Now}";
+        var description = $"{getEntityResponse.Entity.Identifier.Name} - {payload.MemberCode} was updated by the Webhook " +
+            $"using the Profisee Rest API at {DateTime.Now}";
         var attributeNameValuePair = new Dictionary<string, object>
         {
             {"Description", description}
         };
 
-        var updateRecordResponse = await UpdateRecordAsync(payload.EntityObject.Id, payload.MemberCode, attributeNameValuePair, client);
+        var updateRecordResponse = await updateRecordAsync(payload.EntityObject.Id, payload.MemberCode, attributeNameValuePair);
 
         if (!updateRecordResponse.Success)
         {
             var errorDto = getErrorFromProfiseeResponse(updateRecordResponse);
 
-            response.ResponsePayload.Add("Error", errorDto);
-            response.ProcessingStatus = -1;
+            log.LogInformation($"Error: {errorDto}");
         }
-
-        return response;
     }
-    public async Task<GetEntityResponse> GetEntityAsync(Guid entityUId, HttpClient client)
+
+    private async Task<GetEntityResponse> getEntityAsync(Guid entityUId)
     {
         const string uriFormat = "v{0}/Entities/{1}";
         var requestUri = string.Format(uriFormat, 1, entityUId);
 
-        var response = await GetAsync(requestUri, client);
+        var response = await getAsync(requestUri);
 
         var getEntityResponse = new GetEntityResponse
         {
@@ -239,7 +224,8 @@ public class Subscriber
 
         return getEntityResponse;
     }
-    protected async Task<ProfiseeContentResponse> GetAsync(string requestUri, HttpClient client)
+
+    private async Task<ProfiseeContentResponse> getAsync(string requestUri)
     {
         using (var response = await client.GetAsync(requestUri))
         {
@@ -256,6 +242,7 @@ public class Subscriber
             return retValue;
         }
     }
+
     private ErrorDto getErrorFromProfiseeResponse(ProfiseeResponse profiseeResponse)
     {
         var errorDto = new ErrorDto
@@ -266,19 +253,20 @@ public class Subscriber
 
         return errorDto;
     }
-    public async Task<ProfiseeContentResponse> UpdateRecordAsync(Guid entityUId,
+
+    private async Task<ProfiseeContentResponse> updateRecordAsync(Guid entityUId,
             string recordCode,
-            Dictionary<string, object> attributeNameValuePairs,
-            HttpClient client)
+            Dictionary<string, object> attributeNameValuePairs)
     {
         const string uriFormat = "v{0}/Records/{1}/{2}";
         var requestUri = string.Format(uriFormat, 1, entityUId, recordCode);
 
-        var result = await PatchAsync(requestUri, attributeNameValuePairs, client);
+        var result = await patchAsync(requestUri, attributeNameValuePairs);
 
         return result;
     }
-    protected async Task<ProfiseeContentResponse> PatchAsync(string requestUri, object content, HttpClient client)
+
+    private async Task<ProfiseeContentResponse> patchAsync(string requestUri, object content)
     {
         var settings = new JsonSerializerSettings
         {

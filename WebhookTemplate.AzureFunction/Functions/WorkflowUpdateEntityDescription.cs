@@ -1,5 +1,6 @@
-using IdentityModel.Client;
 using IdentityModel;
+using IdentityModel.Client;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -8,55 +9,56 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using Profisee.WebhookTemplate.Common.Clients;
+using Profisee.WebhookTemplate.Common.Clients.Dtos;
+using Profisee.WebhookTemplate.Common.Clients.Entities.Responses;
+using Profisee.WebhookTemplate.Common.Configuration;
 using Profisee.WebhookTemplate.Common.Dtos;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Mime;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Net.Http.Headers;
-using Profisee.WebhookTemplate.Common.Configuration;
-using Profisee.WebhookTemplate.Common.Clients.Dtos;
-using Profisee.WebhookTemplate.Common.Clients.Entities.Responses;
-using Profisee.WebhookTemplate.Common.Clients;
-using System.Net.Mime;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using WebhookTemplate.AzureFunction.Payloads;
 
 namespace WebhookTemplate.AzureFunction.Functions;
 
-public class UpdateEntityDescription
+public class WorkflowUpdateEntityDescription
 {
-    [FunctionName("UpdateEntityDescription")]
-    public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
-         ILogger log)
+    private static HttpClient client;
+    private static IConfigurationRoot config;
+
+    static WorkflowUpdateEntityDescription()
     {
-        var config = new ConfigurationBuilder()
+        config = new ConfigurationBuilder()
                  .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
                  .AddEnvironmentVariables()
                  .Build();
-        var client = new HttpClient(this.getHttpHandler());
+
+        client = new HttpClient();
         var url = config.GetValue<string>("ServiceUrl") + "rest/";
         client.BaseAddress = new Uri(url);
+    }
+
+    [FunctionName("WorkflowUpdateEntityDescription")]
+    public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
+         ILogger log)
+    {
         string msg;
         try
         {
-            msg = $"ActivityGeneric HTTP trigger function processed a request.";
+            msg = $"Workflow Update Entity HTTP trigger function processed a request.";
 
             log.LogInformation(msg);
-
-            msg = $"Call came  from - {req.Headers["X-Forwarded-For"]}";
-            log.LogInformation(msg);
-
-            foreach (var item in req.Headers)
-            {
-                log.LogInformation($"Header = {item.Key} Value = {item.Value} \n");
-            }
 
             string authorizationHeader = req.Headers["Authorization"];
+
             log.LogInformation(authorizationHeader);
             if (string.IsNullOrEmpty(authorizationHeader))
             {
@@ -64,11 +66,13 @@ public class UpdateEntityDescription
                 log.LogInformation(msg);
                 return new OkObjectResult(msg);
             }
-            authorizationHeader = authorizationHeader.Remove(0, 7);
+            authorizationHeader = authorizationHeader.Replace("Bearer ", "");
 
             if (string.IsNullOrEmpty(authorizationHeader))
             {
-                log.LogInformation("NO Authorization header");
+                msg = "NO Authorization header";
+                log.LogInformation(msg);
+                return new OkObjectResult(msg);
             }
             else
             {
@@ -76,25 +80,43 @@ public class UpdateEntityDescription
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var d = getDiscoveryDocument(config, client);
-            tokenHandler.ValidateToken(authorizationHeader, getTokenValidationParameters(d), out SecurityToken validatedToken);
+            var discoveryDocument = await getDiscoveryDocument();
+            try
+            {
+                tokenHandler.ValidateToken(authorizationHeader,
+                    getTokenValidationParameters(discoveryDocument),
+                    out SecurityToken validatedToken);
+            }
+            catch (Exception ex)
+            {
+                msg = "Token failed validation";
+                log.LogInformation(msg);
+                return new UnauthorizedResult();
+            }
+
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
                 JwtBearerDefaults.AuthenticationScheme,
                  authorizationHeader);
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+
+            var reader = new StreamReader(req.Body);
+            string requestBody = await reader.ReadToEndAsync();
 
             if (string.IsNullOrEmpty(requestBody))
             {
-                log.LogInformation($"Body is null or empty");
+                msg = "Body is null or empty";
+                log.LogInformation(msg);
                 return new OkObjectResult(msg);
             }
 
             log.LogInformation($"Body: {requestBody}");
 
-            Payload data = JsonConvert.DeserializeObject<Payload>(requestBody);
+            WorkflowPayload data = JsonConvert.DeserializeObject<WorkflowPayload>(requestBody);
+
             log.LogInformation($"EntityObject: {data.EntityObject}");
             log.LogInformation($"MemberCode: {data.MemberCode}");
-            var webhookResponse = UpdateDescriptionFromRequest(data, req, client, config, log);
+
+            var webhookResponse = updateDescriptionFromRequest(data, req, log);
+
             msg = webhookResponse.Status.ToString();
             return new OkObjectResult(msg);
         }
@@ -103,25 +125,19 @@ public class UpdateEntityDescription
             log.LogInformation(ex.StackTrace);
             log.LogInformation(ex.Message);
             msg = ex.Message;
+            return new OkObjectResult(msg);
         }
-
-        return new OkObjectResult(msg);
-
     }
-    public DiscoveryDocumentResponse getDiscoveryDocument(IConfigurationRoot config, HttpClient client)
+    private async Task<DiscoveryDocumentResponse> getDiscoveryDocument()
     {
-        return client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
+        return await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
         {
 
             Address = config.GetValue<string>("ServiceUrl") + "auth",
             Policy = { RequireHttps = false, ValidateIssuerName = false }
-        }).Result;
+        });
     }
-    private HttpClientHandler getHttpHandler()
-    {
-        var handler = new HttpClientHandler { UseDefaultCredentials = true };
-        return handler;
-    }
+ 
     public TokenValidationParameters getTokenValidationParameters(DiscoveryDocumentResponse disco)
     {
         var keys = new List<SecurityKey>();
@@ -149,50 +165,23 @@ public class UpdateEntityDescription
             RoleClaimType = JwtClaimTypes.Role,
 
             RequireSignedTokens = true
-            //set a clock skew here if needed
         };
 
         return parameters;
     }
-    public class Payload
-    {
-        public Identifier EntityObject { get; set; }
-        public string MemberCode { get; set; }
-        public string Description{ get; set; }
-    }
 
-    public class Identifier
+    private async Task<WorkflowWebhookResponse> updateDescriptionFromRequest(WorkflowPayload payload, HttpRequest req, ILogger log)
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-
-        public override string ToString()
-        {
-            return $"Id: {this.Id}  Name: {this.Name}";
-        }
-    }
-    public class WebhookResponse
-    {
-        [JsonProperty(Required = Required.Default)]
-        public int ProcessingStatus { get; set; }
-        [JsonProperty(Required = Required.Default)]
-        public Dictionary<string, object> ResponsePayload { get; set; }
-    }
-    public async Task<WebhookResponse> UpdateDescriptionFromRequest(Payload payload, HttpRequest req, HttpClient client, IConfigurationRoot config, ILogger log)
-    {
-        var response = new WebhookResponse();
+        var response = new WorkflowWebhookResponse();
         var appsettings = config.Get<AppSettings>();
 
-        var getEntityResponse = await GetEntityAsync(payload.EntityObject.Id, client);
+        var getEntityResponse = await getEntityAsync(payload.EntityObject.Id);
 
         if (!getEntityResponse.Success)
         {
             var errorDto = getErrorFromProfiseeResponse(getEntityResponse);
 
-            response.ResponsePayload.Add("Error", errorDto);
-            response.ProcessingStatus = -1;
-
-            return response;
+            log.LogInformation($"Error: {errorDto}");
         }
 
         var description = payload.Description;
@@ -201,7 +190,7 @@ public class UpdateEntityDescription
             {"Description", description}
         };
 
-        var updateRecordResponse = await UpdateRecordAsync(payload.EntityObject.Id, payload.MemberCode, attributeNameValuePair, client);
+        var updateRecordResponse = await updateRecordAsync(payload.EntityObject.Id, payload.MemberCode, attributeNameValuePair);
 
         if (!updateRecordResponse.Success)
         {
@@ -213,12 +202,13 @@ public class UpdateEntityDescription
 
         return response;
     }
-    public async Task<GetEntityResponse> GetEntityAsync(Guid entityUId, HttpClient client)
+
+    private async Task<GetEntityResponse> getEntityAsync(Guid entityUId)
     {
         const string uriFormat = "v{0}/Entities/{1}";
         var requestUri = string.Format(uriFormat, 1, entityUId);
 
-        var response = await GetAsync(requestUri, client);
+        var response = await getAsync(requestUri);
 
         var getEntityResponse = new GetEntityResponse
         {
@@ -234,7 +224,7 @@ public class UpdateEntityDescription
 
         return getEntityResponse;
     }
-    protected async Task<ProfiseeContentResponse> GetAsync(string requestUri, HttpClient client)
+    private async Task<ProfiseeContentResponse> getAsync(string requestUri)
     {
         using (var response = await client.GetAsync(requestUri))
         {
@@ -261,10 +251,10 @@ public class UpdateEntityDescription
 
         return errorDto;
     }
-    public async Task<ProfiseeContentResponse> UpdateRecordAsync(Guid entityUId,
+
+    private async Task<ProfiseeContentResponse> updateRecordAsync(Guid entityUId,
             string recordCode,
-            Dictionary<string, object> attributeNameValuePairs,
-            HttpClient client)
+            Dictionary<string, object> attributeNameValuePairs)
     {
         const string uriFormat = "v{0}/Records/{1}/{2}";
         var requestUri = string.Format(uriFormat, 1, entityUId, recordCode);
