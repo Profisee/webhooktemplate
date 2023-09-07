@@ -56,7 +56,9 @@ public class Subscriber
 
             log.LogInformation(msg);
 
+            // Extract the authorization header from the incoming HTTP request.
             string authorizationHeader = req.Headers["Authorization"];
+
             log.LogInformation(authorizationHeader);
             if (string.IsNullOrEmpty(authorizationHeader))
             {
@@ -64,6 +66,8 @@ public class Subscriber
                 log.LogInformation(msg);
                 return new OkResult();
             }
+
+            // Remove the "Bearer " prefix from the authorization header. This automatically gets added back in when validating the JWT.
             authorizationHeader = authorizationHeader.Replace("Bearer ", "");
 
             if (string.IsNullOrEmpty(authorizationHeader))
@@ -76,10 +80,12 @@ public class Subscriber
                 log.LogInformation($"Authorization header: {authorizationHeader}");
             }
 
+            // Create a JwtSecurityTokenHandler to validate the JWT token.
             var tokenHandler = new JwtSecurityTokenHandler();
             var discoveryDocument = await getDiscoveryDocument();
             try
             {
+                // Validate the JWT token using the provided discovery document.
                 tokenHandler.ValidateToken(authorizationHeader,
                 getTokenValidationParameters(discoveryDocument),
                 out SecurityToken validatedToken);
@@ -91,6 +97,7 @@ public class Subscriber
                 return new UnauthorizedResult();
             }
 
+            // Set the default authorization header for the HttpClient.
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
                 JwtBearerDefaults.AuthenticationScheme,
                 authorizationHeader);
@@ -115,6 +122,7 @@ public class Subscriber
             log.LogInformation($"UserName: {data.UserName}");
             log.LogInformation($"EventName: {data.EventName}");
 
+            // Update the description using the request data.
             updateDescriptionFromRequest(data, req, config, log);
 
             return new OkResult();
@@ -128,6 +136,7 @@ public class Subscriber
         }
     }
 
+    // Method to retrieve the discovery document for token validation.
     private async Task<DiscoveryDocumentResponse> getDiscoveryDocument()
     {
         return await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
@@ -140,8 +149,10 @@ public class Subscriber
         });
     }
 
+    // Method to create TokenValidationParameters for JWT token validation.
     public TokenValidationParameters getTokenValidationParameters(DiscoveryDocumentResponse disco)
     {
+        // Create a list of security keys from the discovery document.
         var keys = new List<SecurityKey>();
         foreach (var webKey in disco.KeySet.Keys)
         {
@@ -156,6 +167,7 @@ public class Subscriber
             keys.Add(key);
         }
 
+        // Configure token validation parameters.Here, you can set a clock skew in order to handle any JWT validation issues related to timing.
         var parameters = new TokenValidationParameters
         {
             ValidateAudience = false,
@@ -172,6 +184,7 @@ public class Subscriber
         return parameters;
     }
 
+    // Method to update the description based on the request data.
     private async void updateDescriptionFromRequest(SubscriberPayload payload, HttpRequest req, IConfigurationRoot config, ILogger log)
     {
         var appsettings = config.Get<AppSettings>();
@@ -203,6 +216,7 @@ public class Subscriber
         }
     }
 
+    //Method to retrieve an entity directly from the Profisee Service
     private async Task<GetEntityResponse> getEntityAsync(Guid entityUId)
     {
         const string uriFormat = "v{0}/Entities/{1}";
@@ -225,6 +239,7 @@ public class Subscriber
         return getEntityResponse;
     }
 
+    //Method to send the Http Get Request to the Profisee Service
     private async Task<ProfiseeContentResponse> getAsync(string requestUri)
     {
         using (var response = await client.GetAsync(requestUri))
@@ -243,6 +258,7 @@ public class Subscriber
         }
     }
 
+    //Method to handle any Profisee Error Responses
     private ErrorDto getErrorFromProfiseeResponse(ProfiseeResponse profiseeResponse)
     {
         var errorDto = new ErrorDto
@@ -253,7 +269,8 @@ public class Subscriber
 
         return errorDto;
     }
-
+    
+    //Method to update the records in the Profisee Service
     private async Task<ProfiseeContentResponse> updateRecordAsync(Guid entityUId,
             string recordCode,
             Dictionary<string, object> attributeNameValuePairs)
@@ -266,6 +283,7 @@ public class Subscriber
         return result;
     }
 
+    //Method to make an Http Patch Request to the Profisee Service
     private async Task<ProfiseeContentResponse> patchAsync(string requestUri, object content)
     {
         var settings = new JsonSerializerSettings

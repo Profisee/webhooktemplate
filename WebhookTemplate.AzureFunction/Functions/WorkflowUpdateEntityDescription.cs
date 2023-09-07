@@ -57,6 +57,7 @@ public class WorkflowUpdateEntityDescription
 
             log.LogInformation(msg);
 
+            // Extract the authorization header from the incoming HTTP request.
             string authorizationHeader = req.Headers["Authorization"];
 
             log.LogInformation(authorizationHeader);
@@ -66,6 +67,8 @@ public class WorkflowUpdateEntityDescription
                 log.LogInformation(msg);
                 return new OkObjectResult(msg);
             }
+
+            // Remove the "Bearer " prefix from the authorization header. This automatically gets added back in when validating the JWT.
             authorizationHeader = authorizationHeader.Replace("Bearer ", "");
 
             if (string.IsNullOrEmpty(authorizationHeader))
@@ -79,10 +82,12 @@ public class WorkflowUpdateEntityDescription
                 log.LogInformation($"Authorization header: {authorizationHeader}");
             }
 
+            // Create a JwtSecurityTokenHandler to validate the JWT token.
             var tokenHandler = new JwtSecurityTokenHandler();
             var discoveryDocument = await getDiscoveryDocument();
             try
             {
+                // Validate the JWT token using the provided discovery document.
                 tokenHandler.ValidateToken(authorizationHeader,
                     getTokenValidationParameters(discoveryDocument),
                     out SecurityToken validatedToken);
@@ -94,6 +99,7 @@ public class WorkflowUpdateEntityDescription
                 return new UnauthorizedResult();
             }
 
+            // Set the default authorization header for the HttpClient.
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
                 JwtBearerDefaults.AuthenticationScheme,
                  authorizationHeader);
@@ -115,6 +121,7 @@ public class WorkflowUpdateEntityDescription
             log.LogInformation($"EntityObject: {data.EntityObject}");
             log.LogInformation($"MemberCode: {data.MemberCode}");
 
+            // Update the description using the request data.
             var webhookResponse = updateDescriptionFromRequest(data, req, log);
 
             msg = webhookResponse.Status.ToString();
@@ -128,6 +135,8 @@ public class WorkflowUpdateEntityDescription
             return new OkObjectResult(msg);
         }
     }
+
+    // Method to retrieve the discovery document for token validation.
     private async Task<DiscoveryDocumentResponse> getDiscoveryDocument()
     {
         return await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
@@ -137,9 +146,11 @@ public class WorkflowUpdateEntityDescription
             Policy = { RequireHttps = false, ValidateIssuerName = false }
         });
     }
- 
+
+    // Method to create TokenValidationParameters for JWT token validation.
     public TokenValidationParameters getTokenValidationParameters(DiscoveryDocumentResponse disco)
     {
+        // Create a list of security keys from the discovery document.
         var keys = new List<SecurityKey>();
         foreach (var webKey in disco.KeySet.Keys)
         {
@@ -154,6 +165,7 @@ public class WorkflowUpdateEntityDescription
             keys.Add(key);
         }
 
+        // Configure token validation parameters.Here, you can set a clock skew in order to handle any JWT validation issues related to timing.
         var parameters = new TokenValidationParameters
         {
             ValidateAudience = false,
@@ -170,6 +182,7 @@ public class WorkflowUpdateEntityDescription
         return parameters;
     }
 
+    // Method to update the description based on the request data.
     private async Task<WorkflowWebhookResponse> updateDescriptionFromRequest(WorkflowPayload payload, HttpRequest req, ILogger log)
     {
         var response = new WorkflowWebhookResponse();
@@ -203,6 +216,7 @@ public class WorkflowUpdateEntityDescription
         return response;
     }
 
+    //Method to retrieve an entity directly from the Profisee Service.
     private async Task<GetEntityResponse> getEntityAsync(Guid entityUId)
     {
         const string uriFormat = "v{0}/Entities/{1}";
@@ -224,6 +238,8 @@ public class WorkflowUpdateEntityDescription
 
         return getEntityResponse;
     }
+
+    //Method to send the Http Get Request to the Profisee Service.
     private async Task<ProfiseeContentResponse> getAsync(string requestUri)
     {
         using (var response = await client.GetAsync(requestUri))
@@ -241,6 +257,8 @@ public class WorkflowUpdateEntityDescription
             return retValue;
         }
     }
+
+    //Method to handle any Profisee Error Responses.
     private ErrorDto getErrorFromProfiseeResponse(ProfiseeResponse profiseeResponse)
     {
         var errorDto = new ErrorDto
@@ -252,6 +270,7 @@ public class WorkflowUpdateEntityDescription
         return errorDto;
     }
 
+    //Method to update the records in the Profisee Service.
     private async Task<ProfiseeContentResponse> updateRecordAsync(Guid entityUId,
             string recordCode,
             Dictionary<string, object> attributeNameValuePairs)
@@ -263,6 +282,8 @@ public class WorkflowUpdateEntityDescription
 
         return result;
     }
+
+    //Method to make an Http Patch Request to the Profisee Service.
     protected async Task<ProfiseeContentResponse> PatchAsync(string requestUri, object content, HttpClient client)
     {
         var settings = new JsonSerializerSettings
