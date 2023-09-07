@@ -54,7 +54,7 @@ namespace Profisee.WebhookTemplate.WebApp
 
             // For Swagger
             appBuilder.UseSwaggerDefaults(versionDescriptionProvider);
-            appBuilder.UseStaticFiles();;
+            appBuilder.UseStaticFiles();
 
             // Standard ASP.NET Core configuration calls.
             // Note that UseAuthentication and UseAuthorization must be called
