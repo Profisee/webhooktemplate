@@ -192,6 +192,8 @@ public class Subscriber
     // Method to update the description based on the request data.
     private async void updateDescriptionFromRequest(SubscriberPayload payload, ILogger log)
     {
+
+
         var getEntityResponse = await getEntityAsync(payload.EntityObject.Id);
 
         if (!getEntityResponse.Success)
