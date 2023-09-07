@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Profisee.WebhookTemplate.Common.Clients;
 using Profisee.WebhookTemplate.Common.Clients.Entities;
 using Profisee.WebhookTemplate.Common.Clients.Records;
+using Profisee.WebhookTemplate.Common.Contexts;
 using Profisee.WebhookTemplate.Common.Dtos;
 using Profisee.WebhookTemplate.WebApp.Services;
 using System.Reflection;

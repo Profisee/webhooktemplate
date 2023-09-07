@@ -23,7 +23,7 @@ namespace WebhookTemplate.WebApp.Swashbuckle
 
                 var assembly = Assembly.GetExecutingAssembly();
 
-                options.IndexStream = () => assembly.GetManifestResourceStream("WebhookTemplate.wwwroot.swashbuckle.index.html");
+                options.IndexStream = () => assembly.GetManifestResourceStream("WebhookTemplate.WebApp.wwwroot.swashbuckle.index.html");
 
                 options.InjectStylesheet("../swashbuckle/styles.css");
 
