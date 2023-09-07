@@ -12,7 +12,6 @@ using Newtonsoft.Json;
 using Profisee.WebhookTemplate.Common.Clients;
 using Profisee.WebhookTemplate.Common.Clients.Dtos;
 using Profisee.WebhookTemplate.Common.Clients.Entities.Responses;
-using Profisee.WebhookTemplate.Common.Configuration;
 using Profisee.WebhookTemplate.Common.Dtos;
 using System;
 using System.Collections.Generic;
@@ -36,9 +35,9 @@ public class Subscriber
     static Subscriber()
     {
         config = new ConfigurationBuilder()
-                 .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
-                 .AddEnvironmentVariables()
-                 .Build();
+            .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
+            .AddEnvironmentVariables()
+            .Build();
 
         client = new HttpClient();
         var url = config.GetValue<string>("ServiceUrl") + "rest/";
@@ -49,21 +48,19 @@ public class Subscriber
     public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
          ILogger log)
     {
-        string msg;
+        var message = $"Subsciber HTTP trigger function processed a request.";
+        log.LogInformation(message);
+
         try
         {
-            msg = $"Subsciber HTTP trigger function processed a request.";
-
-            log.LogInformation(msg);
-
             // Extract the authorization header from the incoming HTTP request.
             string authorizationHeader = req.Headers["Authorization"];
 
             log.LogInformation(authorizationHeader);
             if (string.IsNullOrEmpty(authorizationHeader))
             {
-                msg = "Authorization header is null";
-                log.LogInformation(msg);
+                message = "Authorization header is null";
+                log.LogInformation(message);
                 return new OkResult();
             }
 
@@ -87,13 +84,13 @@ public class Subscriber
             {
                 // Validate the JWT token using the provided discovery document.
                 tokenHandler.ValidateToken(authorizationHeader,
-                getTokenValidationParameters(discoveryDocument),
-                out SecurityToken validatedToken);
+                    getTokenValidationParameters(discoveryDocument),
+                    out SecurityToken validatedToken);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                msg = "Token failed validation";
-                log.LogInformation(msg);
+                message = "Token failed validation";
+                log.LogInformation(message);
                 return new UnauthorizedResult();
             }
 
@@ -107,14 +104,14 @@ public class Subscriber
 
             if (string.IsNullOrEmpty(requestBody))
             {
-                msg = "Body is null or empty";
-                log.LogInformation(msg);
-                return new OkObjectResult(msg);
+                message = "Body is null or empty";
+                log.LogInformation(message);
+                return new OkObjectResult(message);
             }
 
             log.LogInformation($"Body: {requestBody}");
 
-            SubscriberPayload data = JsonConvert.DeserializeObject<SubscriberPayload>(requestBody);
+            var data = JsonConvert.DeserializeObject<SubscriberPayload>(requestBody);
 
             log.LogInformation($"EntityObject: {data.EntityObject}");
             log.LogInformation($"MemberCode: {data.MemberCode}");
@@ -123,7 +120,7 @@ public class Subscriber
             log.LogInformation($"EventName: {data.EventName}");
 
             // Update the description using the request data.
-            updateDescriptionFromRequest(data, req, config, log);
+            updateDescriptionFromRequest(data, log);
 
             return new OkResult();
         }
@@ -131,26 +128,31 @@ public class Subscriber
         {
             log.LogInformation(ex.Message);
             log.LogInformation(ex.StackTrace);
-            msg = ex.Message;
-            return new OkObjectResult(msg);
+            message = ex.Message;
+            return new OkObjectResult(message);
         }
     }
 
     // Method to retrieve the discovery document for token validation.
     private async Task<DiscoveryDocumentResponse> getDiscoveryDocument()
     {
-        return await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
+        var discoveryDocumentRequest = new DiscoveryDocumentRequest
         {
-            
             Address = config.GetValue<string>("ServiceUrl") + "auth",
-            
-            Policy = { RequireHttps = false, ValidateIssuerName = false }
-       
-        });
+            Policy = new DiscoveryPolicy
+            { 
+                RequireHttps = false, 
+                ValidateIssuerName = false 
+            }
+        };
+
+        var discoveryDocument = await client.GetDiscoveryDocumentAsync(discoveryDocumentRequest);
+
+        return discoveryDocument;
     }
 
     // Method to create TokenValidationParameters for JWT token validation.
-    public TokenValidationParameters getTokenValidationParameters(DiscoveryDocumentResponse disco)
+    private TokenValidationParameters getTokenValidationParameters(DiscoveryDocumentResponse disco)
     {
         // Create a list of security keys from the discovery document.
         var keys = new List<SecurityKey>();
@@ -188,10 +190,8 @@ public class Subscriber
     }
 
     // Method to update the description based on the request data.
-    private async void updateDescriptionFromRequest(SubscriberPayload payload, HttpRequest req, IConfigurationRoot config, ILogger log)
+    private async void updateDescriptionFromRequest(SubscriberPayload payload, ILogger log)
     {
-        var appsettings = config.Get<AppSettings>();
-
         var getEntityResponse = await getEntityAsync(payload.EntityObject.Id);
 
         if (!getEntityResponse.Success)
@@ -199,11 +199,11 @@ public class Subscriber
             var errorDto = getErrorFromProfiseeResponse(getEntityResponse);
 
             log.LogInformation($"Error: {errorDto}");
-
         }
 
         var description = $"{getEntityResponse.Entity.Identifier.Name} - {payload.MemberCode} was updated by the Webhook " +
             $"using the Profisee Rest API at {DateTime.Now}";
+
         var attributeNameValuePair = new Dictionary<string, object>
         {
             {"Description", description}
@@ -275,8 +275,8 @@ public class Subscriber
     
     //Method to update the records in the Profisee Service
     private async Task<ProfiseeContentResponse> updateRecordAsync(Guid entityUId,
-            string recordCode,
-            Dictionary<string, object> attributeNameValuePairs)
+        string recordCode,
+        Dictionary<string, object> attributeNameValuePairs)
     {
         const string uriFormat = "v{0}/Records/{1}/{2}";
         var requestUri = string.Format(uriFormat, 1, entityUId, recordCode);
