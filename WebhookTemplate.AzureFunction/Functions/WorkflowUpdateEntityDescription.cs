@@ -176,7 +176,10 @@ public class WorkflowUpdateEntityDescription
             NameClaimType = JwtClaimTypes.Name,
             RoleClaimType = JwtClaimTypes.Role,
 
-            RequireSignedTokens = true
+            RequireSignedTokens = true,
+            
+            //To solve JWT token validation issues related to clock skew, you can change this parameter to longer/shorter timespans
+            ClockSkew = TimeSpan.FromMinutes(5)
         };
 
         return parameters;
