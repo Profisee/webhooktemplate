@@ -116,16 +116,15 @@ public class WorkflowUpdateEntityDescription
 
             log.LogInformation($"Body: {requestBody}");
 
-            WorkflowPayload data = JsonConvert.DeserializeObject<WorkflowPayload>(requestBody);
+            WebhookRequestDto data = JsonConvert.DeserializeObject<WebhookRequestDto>(requestBody);
 
-            log.LogInformation($"EntityObject: {data.EntityObject}");
-            log.LogInformation($"MemberCode: {data.MemberCode}");
+            log.LogInformation($"EntityObject: {data.EntityId}");
+            log.LogInformation($"MemberCode: {data.Code}");
 
             // Update the description using the request data.
-            var webhookResponse = updateDescriptionFromRequest(data, req, log);
-
-            msg = webhookResponse.Status.ToString();
-            return new OkObjectResult(msg);
+            var webhookResponse = await updateDescriptionFromRequest(data, log);
+            log.LogInformation(webhookResponse.ToString());
+            return new OkObjectResult(webhookResponse);
         }
         catch (Exception ex)
         {
@@ -186,12 +185,11 @@ public class WorkflowUpdateEntityDescription
     }
 
     // Method to update the description based on the request data.
-    private async Task<WorkflowWebhookResponse> updateDescriptionFromRequest(WorkflowPayload payload, HttpRequest req, ILogger log)
+    private async Task<WorkflowWebhookResponse> updateDescriptionFromRequest(WebhookRequestDto payload, ILogger log)
     {
         var response = new WorkflowWebhookResponse();
-        var appsettings = config.Get<AppSettings>();
 
-        var getEntityResponse = await getEntityAsync(payload.EntityObject.Id);
+        var getEntityResponse = await getEntityAsync(payload.EntityId);
 
         if (!getEntityResponse.Success)
         {
@@ -200,13 +198,13 @@ public class WorkflowUpdateEntityDescription
             log.LogInformation($"Error: {errorDto}");
         }
 
-        var description = payload.Description;
+        var description = "PaaS Testing Changes";
         var attributeNameValuePair = new Dictionary<string, object>
         {
             {"Description", description}
         };
 
-        var updateRecordResponse = await updateRecordAsync(payload.EntityObject.Id, payload.MemberCode, attributeNameValuePair);
+        var updateRecordResponse = await updateRecordAsync(payload.EntityId, payload.Code, attributeNameValuePair);
 
         if (!updateRecordResponse.Success)
         {
@@ -214,6 +212,10 @@ public class WorkflowUpdateEntityDescription
 
             response.ResponsePayload.Add("Error", errorDto);
             response.ProcessingStatus = -1;
+        }else
+        {
+            response.ProcessingStatus = 1;
+            response.ResponsePayload = new Dictionary<string, object> { { "Code", 200 } };
         }
 
         return response;

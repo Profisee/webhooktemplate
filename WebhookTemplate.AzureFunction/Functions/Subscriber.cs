@@ -123,7 +123,7 @@ public class Subscriber
             log.LogInformation($"EventName: {data.EventName}");
 
             // Update the description using the request data.
-            updateDescriptionFromRequest(data, req, config, log);
+            updateDescriptionFromRequest(data, log);
 
             return new OkResult();
         }
@@ -188,9 +188,8 @@ public class Subscriber
     }
 
     // Method to update the description based on the request data.
-    private async void updateDescriptionFromRequest(SubscriberPayload payload, HttpRequest req, IConfigurationRoot config, ILogger log)
+    private async void updateDescriptionFromRequest(SubscriberPayload payload, ILogger log)
     {
-        var appsettings = config.Get<AppSettings>();
 
         var getEntityResponse = await getEntityAsync(payload.EntityObject.Id);
 
