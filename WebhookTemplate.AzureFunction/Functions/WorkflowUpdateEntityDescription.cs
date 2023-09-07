@@ -12,7 +12,6 @@ using Newtonsoft.Json;
 using Profisee.WebhookTemplate.Common.Clients;
 using Profisee.WebhookTemplate.Common.Clients.Dtos;
 using Profisee.WebhookTemplate.Common.Clients.Entities.Responses;
-using Profisee.WebhookTemplate.Common.Configuration;
 using Profisee.WebhookTemplate.Common.Dtos;
 using System;
 using System.Collections.Generic;
@@ -23,7 +22,6 @@ using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using WebhookTemplate.AzureFunction.Payloads;
 
@@ -37,9 +35,9 @@ public class WorkflowUpdateEntityDescription
     static WorkflowUpdateEntityDescription()
     {
         config = new ConfigurationBuilder()
-                 .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
-                 .AddEnvironmentVariables()
-                 .Build();
+            .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
+            .AddEnvironmentVariables()
+            .Build();
 
         client = new HttpClient();
         var url = config.GetValue<string>("ServiceUrl") + "rest/";
@@ -50,12 +48,11 @@ public class WorkflowUpdateEntityDescription
     public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
          ILogger log)
     {
-        string msg;
+        var message = $"Workflow Update Entity HTTP trigger function processed a request.";
+
         try
         {
-            msg = $"Workflow Update Entity HTTP trigger function processed a request.";
-
-            log.LogInformation(msg);
+            log.LogInformation(message);
 
             // Extract the authorization header from the incoming HTTP request.
             string authorizationHeader = req.Headers["Authorization"];
@@ -63,9 +60,9 @@ public class WorkflowUpdateEntityDescription
             log.LogInformation(authorizationHeader);
             if (string.IsNullOrEmpty(authorizationHeader))
             {
-                msg = "Authorization header is null";
-                log.LogInformation(msg);
-                return new OkObjectResult(msg);
+                message = "Authorization header is null";
+                log.LogInformation(message);
+                return new OkObjectResult(message);
             }
 
             // Remove the "Bearer " prefix from the authorization header. This automatically gets added back in when validating the JWT.
@@ -73,9 +70,9 @@ public class WorkflowUpdateEntityDescription
 
             if (string.IsNullOrEmpty(authorizationHeader))
             {
-                msg = "NO Authorization header";
-                log.LogInformation(msg);
-                return new OkObjectResult(msg);
+                message = "NO Authorization header";
+                log.LogInformation(message);
+                return new OkObjectResult(message);
             }
             else
             {
@@ -92,31 +89,31 @@ public class WorkflowUpdateEntityDescription
                     getTokenValidationParameters(discoveryDocument),
                     out SecurityToken validatedToken);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                msg = "Token failed validation";
-                log.LogInformation(msg);
+                message = "Token failed validation";
+                log.LogInformation(message);
                 return new UnauthorizedResult();
             }
 
             // Set the default authorization header for the HttpClient.
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
                 JwtBearerDefaults.AuthenticationScheme,
-                 authorizationHeader);
+                authorizationHeader);
 
             var reader = new StreamReader(req.Body);
             string requestBody = await reader.ReadToEndAsync();
 
             if (string.IsNullOrEmpty(requestBody))
             {
-                msg = "Body is null or empty";
-                log.LogInformation(msg);
-                return new OkObjectResult(msg);
+                message = "Body is null or empty";
+                log.LogInformation(message);
+                return new OkObjectResult(message);
             }
 
             log.LogInformation($"Body: {requestBody}");
 
-            WebhookRequestDto data = JsonConvert.DeserializeObject<WebhookRequestDto>(requestBody);
+            var data = JsonConvert.DeserializeObject<WorkflowPayload>(requestBody);
 
             log.LogInformation($"EntityObject: {data.EntityId}");
             log.LogInformation($"MemberCode: {data.Code}");
@@ -130,8 +127,8 @@ public class WorkflowUpdateEntityDescription
         {
             log.LogInformation(ex.StackTrace);
             log.LogInformation(ex.Message);
-            msg = ex.Message;
-            return new OkObjectResult(msg);
+            message = ex.Message;
+            return new OkObjectResult(message);
         }
     }
 
@@ -277,8 +274,8 @@ public class WorkflowUpdateEntityDescription
 
     //Method to update the records in the Profisee Service.
     private async Task<ProfiseeContentResponse> updateRecordAsync(Guid entityUId,
-            string recordCode,
-            Dictionary<string, object> attributeNameValuePairs)
+        string recordCode,
+        Dictionary<string, object> attributeNameValuePairs)
     {
         const string uriFormat = "v{0}/Records/{1}/{2}";
         var requestUri = string.Format(uriFormat, 1, entityUId, recordCode);
