@@ -113,7 +113,7 @@ public class WorkflowUpdateEntityDescription
 
             log.LogInformation($"Body: {requestBody}");
 
-            var data = JsonConvert.DeserializeObject<WorkflowPayload>(requestBody);
+            var data = JsonConvert.DeserializeObject<WebhookRequestDto>(requestBody);
 
             log.LogInformation($"EntityObject: {data.EntityId}");
             log.LogInformation($"MemberCode: {data.Code}");
