@@ -46,12 +46,13 @@ To test against the provided workflow, you must restore the model, archive, and 
     - Name: ServiceUrl 
     - Value: external DNS URL (ex: https://profiseenew.corp.profisee.com/profisee/). 
         *Note: The App URL should have “/profisee/” at the end
-3.	Microsoft Visual Studio (MVS): Clone/Download the template: Profisee/webhooktemplate (github.com) and publish the Azure Function App:
-    - WebhookTemplate.AzureFunction -> Publish -> Target: Azure -> Specific target: Azure Function App (Windows) -> Story128376LogicApp: Story128376FunctionApp -> Publish
-    - After clicking the 'Publish' button, wait for the ‘Function app to be ready…’
+3.	Microsoft Visual Studio (MVS): 
+    - Clone/Download the template: Profisee/webhooktemplate (github.com) and publish the Azure Function App:
+        1. WebhookTemplate.AzureFunction -> Publish -> Target: Azure -> Specific target: Azure Function App (Windows) -> Story128376LogicApp: Story128376FunctionApp -> Publish
+        2. After clicking the 'Publish' button, wait for the ‘Function app to be ready…’
     - Go to Function App in Azure Portal and verify that 2 Functions presented in the Overview section: 
-        Subscriber 
-        WorkflowUpdateEntityDescription 
+      1. **Subscriber** 
+      2. **WorkflowUpdateEntityDescription** 
 
 
 ## Running the functions
@@ -69,16 +70,17 @@ There are two endpoints available in this application.
 Go to Azure Portal -> Function App -> Pick your Function App ->Pick function in the Name section -> Click on ‘Get Function URL’ at the top command Bar.
 
 They operate in the following manner:
-    - "api/WorkflowUpdateEntityDescription" - This endpoint will receive a workflow payload, load a selected entity and record, update the description, and push the update back to the profisee service. It grabs the Authorization from the header, validates the JWT, binds the content received in the HTTP request body to a Workflow Payload object, and will push back the update request to the profisee service. This should be a good foundation for building more complex functionality.
-    - "api/Subscriber" - This endpoint will be used with the ‘Real Time Event Processing in the Profisee Fast App Studio. This endpoint receives a Subscriber Payload and updates the description of the selected record on the entity. It's similar to the workflow function, only working as a subscriber.
+   - **api/WorkflowUpdateEntityDescription** - This endpoint will receive a workflow payload, load a selected entity and record, update the description, and push the update back to the profisee service. It grabs the Authorization from the header, validates the JWT, binds the content received in the HTTP request body to a Workflow Payload object, and will push back the update request to the profisee service. This should be a good foundation for building more complex functionality.
+    
+   - **api/Subscriber** - This endpoint will be used with the ‘Real Time Event Processing in the Profisee Fast App Studio. This endpoint receives a Subscriber Payload and updates the description of the selected record on the entity. It's similar to the workflow function, only working as a subscriber.
 
 ## Additional Notes
 
 Files to note:
 
-- WebhookTemplate.AzureFunction\Functions\WorkflowUpdateEntityDescription.cs- This is where the UpdateEntityDescription endpoint is located.
-- WebhookTemplate.AzureFunction\Functions\Subscribers.cs - This is where the Subscribers endpoint is located.
-- WebhookTemplate.AzureFunction\local.settings.json - This is where the ServiceUrl can be inputted for local testing.
+- **WebhookTemplate.AzureFunction\Functions\WorkflowUpdateEntityDescription.cs** - This is where the UpdateEntityDescription endpoint is located.
+- **WebhookTemplate.AzureFunction\Functions\Subscribers.cs** - This is where the Subscribers endpoint is located.
+- **WebhookTemplate.AzureFunction\local.settings.json** - This is where the ServiceUrl can be inputted for local testing.
 
 ### Invalid JWT Sent to Webhook
 
