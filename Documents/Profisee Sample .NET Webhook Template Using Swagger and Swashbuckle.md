@@ -57,9 +57,9 @@ The Swagger page documents the endpoints for the webhook, including information 
 
 Three endpoints are available in this application. They operate in the following manner:
 
-- "profisee/v1/webhook/activity-generic" - This endpoint demonstrates receiving an untyped object in the form of a generic string-object dictionary. The backing service logs the content of the dictionary, and then returns a WebhookResponseDto object.
-- "profisee/v1/webhook/activity-typed" - This endpoint demonstrates receiving a typed object in the form of WebhookRequestDto. This binds the content received in the http request body to the WebhookRequestDto object, and then outputs the code value. It is best practice to use typed objects when receiving incoming requests from the Profisee service, as it is easier to build validation logic and error handling around typed objects than a generic dictionary representing an object.
-- "profisee/v1/webhook/subscriber" - This endpoint is to be used with eventing. This endpoint receives a SubscriberPayloadDto containing information about the event that occured.
+- **profisee/v1/webhook/activity-generic** - This endpoint demonstrates receiving an untyped object in the form of a generic string-object dictionary. The backing service logs the content of the dictionary, and then returns a WebhookResponseDto object.
+- **profisee/v1/webhook/activity-typed** - This endpoint demonstrates receiving a typed object in the form of WebhookRequestDto. This binds the content received in the http request body to the WebhookRequestDto object, and then outputs the code value. It is best practice to use typed objects when receiving incoming requests from the Profisee service, as it is easier to build validation logic and error handling around typed objects than a generic dictionary representing an object.
+- **profisee/v1/webhook/subscriber** - This endpoint is to be used with eventing. This endpoint receives a SubscriberPayloadDto containing information about the event that occured.
 
 ## Handling Response Objects
 
