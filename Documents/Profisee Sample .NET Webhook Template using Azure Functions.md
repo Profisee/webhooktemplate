@@ -41,11 +41,18 @@ To test against the provided workflow, you must restore the model, archive, and 
 
 ## Azure Portal Setup
 
-1. In Azure Portal, create a function app
-2. Once the function is created, go to configuration and add in a “ServiceUrl” application setting and make that URL the application url (ex: https://corpltr11.corp.profisee.com/profisee/). Note App URL should have “/profisee/” at the end
-3. Download the template and publish the Azure function app
-    - Publish to an Azure target → Azure Function App → select the azure function app you created
-    - At this point you can modify the 2 functions to what you need it to do
+1.	In Azure Portal, create a function app (Azure services > Function App -> Create)
+2.	Once the function is created, go to Configuration-> Application Settings->New application setting:
+    - Name: ServiceUrl 
+    - Value: external DNS URL (ex: https://profiseenew.corp.profisee.com/profisee/). 
+        *Note: The App URL should have “/profisee/” at the end
+3.	Microsoft Visual Studio (MVS): Clone/Download the template: Profisee/webhooktemplate (github.com) and publish the Azure Function App:
+    - WebhookTemplate.AzureFunction -> Publish -> Target: Azure -> Specific target: Azure Function App (Windows) -> Story128376LogicApp: Story128376FunctionApp -> Publish
+    - After clicking the 'Publish' button, wait for the ‘Function app to be ready…’
+    - Go to Function App in Azure Portal and verify that 2 Functions presented in the Overview section: 
+        Subscriber 
+        WorkflowUpdateEntityDescription 
+
 
 ## Running the functions
 
@@ -57,19 +64,21 @@ To test against the provided workflow, you must restore the model, archive, and 
 
 ## Endpoints
 
-Two endpoints are available in this application. The URL for these endpoints can be found in the Azure Portal by going into the Azure Function App. From there, select the specific function and you should get taken to the function overview. Once you are there, go to the "Code+Test" tab and get the function URL. They operate in the following manner:
+There are two endpoints available in this application.
 
-- "api/WorkflowUpdateEntityDescription" - This endpoint will recieve a workflow payload, load a selected entity and record, update the description and pushes the update back to the profisee service. It grabs the Authorization from the header, validates the JWT, binds the content recieved in the http request body to a Workflow Paload object, and will push back the update request to the profisee service. This should be a good foundation for building more complex functionality.
-- "api/Subscriber" - This endpoint is to be used with eventing. This endpoint receives a SubscriberPayload and updates the description of the selected record on the entity. It's similar to the workflow function, only working as a subscriber.
+Go to Azure Portal -> Function App -> Pick your Function App ->Pick function in the Name section -> Click on ‘Get Function URL’ at the top command Bar.
+
+They operate in the following manner:
+    - "api/WorkflowUpdateEntityDescription" - This endpoint will receive a workflow payload, load a selected entity and record, update the description, and push the update back to the profisee service. It grabs the Authorization from the header, validates the JWT, binds the content received in the HTTP request body to a Workflow Payload object, and will push back the update request to the profisee service. This should be a good foundation for building more complex functionality.
+    - "api/Subscriber" - This endpoint will be used with the ‘Real Time Event Processing in the Profisee Fast App Studio. This endpoint receives a Subscriber Payload and updates the description of the selected record on the entity. It's similar to the workflow function, only working as a subscriber.
 
 ## Additional Notes
 
 Files to note:
 
-- **WebhookTemplate.AzureFunction\Functions\UpdateEntityDescription.cs** - This is where the UpdateEntityDescription endpoint is located.
-- **WebhookTemplate.AzureFunction\Functions\Subscribers.cs** - This is where the Subscribers endpoint is located.
-- **WebhookTemplate.AzureFunction\local.settings.json** - This is where the ServiceUrl can be inputted.
-- **WebhookTemplate.AzureFunction\Startup.cs** - This is where the core setup and configuration logic is located. Additional configuration is handled within the extensions folder.
+- WebhookTemplate.AzureFunction\Functions\WorkflowUpdateEntityDescription.cs)- This is where the UpdateEntityDescription endpoint is located.
+- WebhookTemplate.AzureFunction\Functions\Subscribers.cs - This is where the Subscribers endpoint is located.
+- WebhookTemplate.AzureFunction\local.settings.json - This is where the ServiceUrl can be inputted for local testing.
 
 ### Invalid JWT Sent to Webhook
 
