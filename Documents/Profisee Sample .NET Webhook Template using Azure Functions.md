@@ -76,7 +76,7 @@ They operate in the following manner:
 
 Files to note:
 
-- WebhookTemplate.AzureFunction\Functions\WorkflowUpdateEntityDescription.cs)- This is where the UpdateEntityDescription endpoint is located.
+- WebhookTemplate.AzureFunction\Functions\WorkflowUpdateEntityDescription.cs- This is where the UpdateEntityDescription endpoint is located.
 - WebhookTemplate.AzureFunction\Functions\Subscribers.cs - This is where the Subscribers endpoint is located.
 - WebhookTemplate.AzureFunction\local.settings.json - This is where the ServiceUrl can be inputted for local testing.
 
