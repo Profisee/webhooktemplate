@@ -22,6 +22,7 @@ namespace Profisee.WebhookTemplate.WebApp.Extensions
 
         public static IServiceCollection AddUserContextServices(this IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
             services.AddScoped<UserContext>();
             services.AddTransient<IUserContextProvider, UserContextProvider>();
 
