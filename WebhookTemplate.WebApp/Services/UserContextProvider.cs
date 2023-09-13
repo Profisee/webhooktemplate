@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Profisee.WebhookTemplate.Common.Contexts;
-using Profisee.WebhookTemplate.Common.Services;
+using Profisee.WebhookTemplate.WebApp.Contexts;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace Profisee.WebhookTemplate.WebApp.Services

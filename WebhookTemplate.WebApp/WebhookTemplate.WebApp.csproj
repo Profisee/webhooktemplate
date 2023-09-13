@@ -47,8 +47,4 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\WebhookTemplate.Common\WebhookTemplate.Common.csproj" />
-    </ItemGroup>
 </Project>

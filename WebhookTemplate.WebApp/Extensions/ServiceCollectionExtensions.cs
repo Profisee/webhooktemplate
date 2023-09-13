@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Profisee.WebhookTemplate.Common.Configuration;
-using Profisee.WebhookTemplate.Common.Contexts;
-using Profisee.WebhookTemplate.Common.Services;
+using Profisee.WebhookTemplate.WebApp.Configuration;
+using Profisee.WebhookTemplate.WebApp.Contexts;
+using Profisee.WebhookTemplate.WebApp.Services;
 using Profisee.WebhookTemplate.WebApp.Services;
 using WebhookTemplate.WebApp.Mvc;
 
