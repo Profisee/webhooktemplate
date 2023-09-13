@@ -15,10 +15,6 @@ This repository contains the Profisee Webhook templates and describes how to uti
 
 [Home](https://github.com/Profisee/webhooktemplate/tree/story/132784/WebhookTemplate.AzureFunction) to files containing code for setting up webhooks using Azure Functions
 
-## WebhookTemplate.Common 
-
-[Home](https://github.com/Profisee/webhooktemplate/tree/story/132784/WebhookTemplate.Common) to Webhook files to aid in their configuration and response services
-
 ## Webhook Template.WebApp 
 
 [Home](https://github.com/Profisee/webhooktemplate/tree/story/128376/WebhookTemplate.WebApp) to a sample webhook project that can be compiled and deployed to use as webhook for Profisee Service webhook activities and events.
