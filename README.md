@@ -1,6 +1,6 @@
 # Profisee .NET Webhook Templates
 
-This repository contains Profisee Webhook templates and describes how to utilize them. Webhooks work with Profisee's Workflow or Event Subscription service to send customized payloads to a webhook endpoint and have responses sent back that can be utilized by the Workflow Activity. Events can then be configured to send information related to a specific entity.
+This repository contains Profisee Webhook templates and describes how to utilize them. Webhooks work with Profisee's Workflow or Real-Time Event Processing service to send customized payloads to a webhook endpoint and have responses sent back that can be utilized by the Workflow Activity. Events can then be configured to send information related to a specific entity.
 
 ## Additional Files
 
