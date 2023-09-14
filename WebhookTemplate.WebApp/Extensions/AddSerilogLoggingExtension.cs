@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Profisee.WebhookTemplate.Common.Configuration;
+using Profisee.WebhookTemplate.WebApp.Configuration;
 using Serilog;
 using Serilog.Debugging;
 using Serilog.Sinks.MSSqlServer;

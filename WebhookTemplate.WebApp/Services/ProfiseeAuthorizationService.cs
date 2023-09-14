@@ -63,7 +63,7 @@ namespace Profisee.WebhookTemplate.WebApp.Services
             var authResult = evaluator.Evaluate(authContext);
             if (authResult.Succeeded)
             {
-                logger.LogInformation($"Authorization has succeeded for {JsonConvert.SerializeObject(requirements)}");
+                logger.LogInformation($"Authorization has succeeded for {JsonConvert.SerializeObject(requirements, Formatting.Indented)}");
             }
             else
             {
@@ -71,7 +71,7 @@ namespace Profisee.WebhookTemplate.WebApp.Services
                 builder.AppendLine($"Authorization failed for: ");
                 foreach (var failedRequirement in authResult.Failure.FailedRequirements)
                 {
-                    builder.AppendLine(JsonConvert.SerializeObject(failedRequirement));
+                    builder.AppendLine(JsonConvert.SerializeObject(failedRequirement, Formatting.Indented));
                 }
                 logger.LogError(builder.ToString());
             }

@@ -16,18 +16,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web.Http;
 using WebhookTemplate.AzureFunction.Clients.Auth;
 
 namespace WebhookTemplate.AzureFunction.Functions;
 
-public class Subscriber
+public class WorkflowWebhookActivity
 {
     private static HttpClient httpClient;
     private static IOptions<AppSettings> appSettingsOptions;
 
-    static Subscriber()
-    {       
+    static WorkflowWebhookActivity()
+    {
         var appSettings = new AppSettings();
         new ConfigurationBuilder()
             .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
@@ -41,11 +40,11 @@ public class Subscriber
         httpClient.BaseAddress = new Uri($"{appSettingsOptions.Value.ServiceUrl}rest/", UriKind.Absolute);
     }
 
-    [FunctionName("Subscriber")]
+    [FunctionName("WorkflowWebhookActivity")]
     public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
          ILogger log)
     {
-        var message = $"Subsciber HTTP trigger function processed a request.";
+        var message = $"Workflow Webhook Activity HTTP trigger function processed a request.";
         log.LogInformation(message);
 
         try
@@ -63,7 +62,6 @@ public class Subscriber
 
             // Remove the "Bearer " prefix from the authorization header. This automatically gets added back in when validating the JWT.
             authorizationHeader = authorizationHeader.Replace("Bearer ", string.Empty);
-
             if (string.IsNullOrEmpty(authorizationHeader))
             {
                 message = "NO Authorization header";
@@ -71,6 +69,7 @@ public class Subscriber
                 return new UnauthorizedObjectResult(message);
             }
 
+            // Create a profisee auth client and validate the auth
             var profiseeAuthClient = new ProfiseeAuthClient(httpClient, appSettingsOptions, log);
             var isJwtValid = await profiseeAuthClient.validateJwt(authorizationHeader);
 
@@ -96,21 +95,27 @@ public class Subscriber
 
             log.LogInformation($"Body: {requestBody}");
 
-            var request = JsonConvert.DeserializeObject<SubscriberPayloadDto>(requestBody);
+            var request = JsonConvert.DeserializeObject<WebhookRequestDto>(requestBody);
 
-            log.LogInformation($"Request: {JsonConvert.SerializeObject(request, Formatting.Indented)}");
+            log.LogInformation($"EntityObject: {request.EntityId}");
+            log.LogInformation($"MemberCode: {request.Code}");
 
             // Update the description using the request data.
-            var getEntityResponse = await profiseeEntitiesClient.GetEntityAsync(request.EntityObject.Id, authorizationHeader);
+            var response = new WebhookResponseDto();
+
+            var getEntityResponse = await profiseeEntitiesClient.GetEntityAsync(request.EntityId, authorizationHeader);
 
             if (!getEntityResponse.Success)
             {
                 var errorDto = getErrorFromProfiseeResponse(getEntityResponse);
+                response.ResponsePayload.Add("Error", errorDto);
+                response.ProcessingStatus = -1;
+
                 log.LogError($"Error: {JsonConvert.SerializeObject(errorDto, Formatting.Indented)}");
-                return new OkObjectResult(message);
+                return new OkObjectResult(response);
             }
 
-            var description = $"{getEntityResponse.Entity.Identifier.Name} - {request.MemberCode} " 
+            var description = $"{getEntityResponse.Entity.Identifier.Name} - {request.Code} " 
                 + $"was updated by the Azure Function Webhook using the Profisee Rest API at {DateTime.Now}";
 
             var attributeNameValuePair = new Dictionary<string, object>
@@ -118,30 +123,35 @@ public class Subscriber
                 { "Description", description }
             };
 
-            var updateRecordResponse = await profiseeRecordsClient.UpdateRecordAsync(request.EntityObject.Id, 
-                request.MemberCode, 
+            var updateRecordResponse = await profiseeRecordsClient.UpdateRecordAsync(request.EntityId, 
+                request.Code, 
                 attributeNameValuePair, 
                 authorizationHeader);
 
             if (!updateRecordResponse.Success)
             {
-                var errorDto = getErrorFromProfiseeResponse(getEntityResponse);
+                var errorDto = getErrorFromProfiseeResponse(updateRecordResponse);
+
+                response.ResponsePayload.Add("Error", errorDto);
+                response.ProcessingStatus = -1;
+
                 log.LogError($"Error: {JsonConvert.SerializeObject(errorDto, Formatting.Indented)}");
-                return new OkResult();
+                return new OkObjectResult(response);
             }
 
-            return new OkResult();
+            log.LogInformation(JsonConvert.SerializeObject(response, Formatting.Indented));
+            return new OkObjectResult(response);
         }
         catch (Exception ex)
         {
-            log.LogError(ex.Message);
             log.LogError(ex.StackTrace);
+            log.LogError(ex.Message);
             message = ex.Message;
             return new OkObjectResult(message);
         }
     }
 
-    //Method to handle any Profisee Error Responses
+    //Method to handle any Profisee Error Responses.
     private ErrorDto getErrorFromProfiseeResponse(ProfiseeResponse profiseeResponse)
     {
         var errorDto = new ErrorDto
@@ -151,5 +161,5 @@ public class Subscriber
         };
 
         return errorDto;
-    }    
+    }
 }
