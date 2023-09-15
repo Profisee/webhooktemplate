@@ -28,7 +28,7 @@ Please note that these values also exist under the "local.settings.json" file in
 
 ## Workflow Setup
 
-To test against the provided workflow, you must restore the model, archive, and workflow provided in the **Additional Files** folder. Configure the workflow's **Endpoint URL** value to the URL for the webhook. E.g, https://azurefunctionappURL.azurewebsites.net/api/WorkflowUpdateEntityDescription. It can also be set to a local host directory for debugging purposes
+To test against the provided workflow, you must restore the model, archive, and workflow provided in the **Additional Files** folder. Configure the workflow's **Endpoint URL** value to the URL for the webhook. E.g, https://azurefunctionappURL.azurewebsites.net/api/WorkflowWebhookActivity. It can also be set to a local host directory for debugging purposes
 
 ## Event Subscriber Setup
 
@@ -106,6 +106,6 @@ by changing the clock skew in the code.
 
 ##### Steps
 
-1. [Here](https://github.com/Profisee/webhooktemplate/blob/story/132784/WebhookTemplate.AzureFunction/Functions/WorkflowUpdateEntityDescription.cs) you can change the clock skew.
+1. [Here](https://github.com/Profisee/webhooktemplate/blob/story/132784/WebhookTemplate.AzureFunction/Functions/WorkflowWebhookActivity.cs) you can change the clock skew.
 2. Go to the getTokenValidationParameters function and scroll to the paramater variable.
 3. Change the ClockSkew TimeSpan from 5 minutes to desired value to resolve JWT Invalidation issue
