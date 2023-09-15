@@ -52,7 +52,7 @@ To test against the provided workflow, you must restore the model, archive, and 
         2. After clicking the 'Publish' button, wait for the ‘Function app to be ready…’
     - Go to Function App in Azure Portal and verify that 2 Functions presented in the Overview section: 
       1. **Subscriber** 
-      2. **WorkflowUpdateEntityDescription** 
+      2. **WorkflowWebhookActivity** 
 
 
 ## Running the functions
@@ -70,7 +70,7 @@ There are two endpoints available in this application.
 Go to Azure Portal -> Function App -> Pick your Function App ->Pick function in the Name section -> Click on ‘Get Function URL’ at the top command Bar.
 
 They operate in the following manner:
-   - **api/WorkflowUpdateEntityDescription** - This endpoint will receive a workflow payload, load a selected entity and record, update the description, and push the update back to the profisee service. It grabs the Authorization from the header, validates the JWT, binds the content received in the HTTP request body to a Workflow Payload object, and will push back the update request to the profisee service. This should be a good foundation for building more complex functionality.
+   - **api/WorkflowWebhookActivity** - This endpoint will receive a workflow payload, load a selected entity and record, update the description, and push the update back to the profisee service. It grabs the Authorization from the header, validates the JWT, binds the content received in the HTTP request body to a Workflow Payload object, and will push back the update request to the profisee service. This should be a good foundation for building more complex functionality.
     
    - **api/Subscriber** - This endpoint will be used with the ‘Real Time Event Processing in the Profisee Fast App Studio. This endpoint receives a Subscriber Payload and updates the description of the selected record on the entity. It's similar to the workflow function, only working as a subscriber.
 
