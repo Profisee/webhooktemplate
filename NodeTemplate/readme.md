@@ -55,7 +55,7 @@ To test against the provided workflow, you must restore the model, archive, and 
 
 Two endpoints are available in this application. They operate in the following manner:
 
-- **webhooks/workflow-activity** - This endpoint demonstrates receiving a JSON object payload from a workflow. The webhook simply ogs the payload and then returns a response object.
+- **webhooks/workflow-activity** - This endpoint demonstrates receiving a JSON object payload from a workflow. The webhook simply logs the payload and then returns a response object.
 - **webhooks/subscriber** - This endpoint is to be used with eventing. This endpoint receives a JSON payload containing information about the event that occured. It then uses the data in the payload to send a request to the Profisee REST API to update the description for the corresponding record. This endpoint currently expects a JSON object with the following shape:
 
 ```
