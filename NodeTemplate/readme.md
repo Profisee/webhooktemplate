@@ -8,7 +8,13 @@ Use this sample Node.js template as a quick outline for setting up a webhook to 
 
 This sample template does not include information on running this application with a particular web server technology, and it is currently set up to run on localhost with port 3000. The port number can be changed in the _config.js_ file.
 
-Profisee requires that webhook endpoints are HTTPS. However, for simplicity, this example just runs a development server on localhost without HTTPS. This template does not include information on how to run this server on a production server with HTTPS, but for testing purposes you can use a tool like [ngrok](https://ngrok.com/) to expose your development server to the internet with HTTPS. After downloading and installing ngrok, start the development server for this app and then run the following commands:
+This webhook assumes that your Profisee instance is configured with a proper SSL certificate. If it doesn't, all `fetch()` calls will fail. If you would like to disable this behavior for local testing purposes, you can set an environment variable named `NODE_TLS_REJECT_UNAUTHORIZED` to `0`. Note that this is unsafe and should NOT be used in production. In PowerShell, you can use the following command:
+
+```
+$env:NODE_TLS_REJECT_UNAUTHORIZED = "0"
+```
+
+Profisee also requires that webhook endpoints are HTTPS. However, for simplicity, this example just runs a development server on localhost without HTTPS. This template does not include information on how to run this server on a production server with HTTPS, but for testing purposes you can use a tool like [ngrok](https://ngrok.com/) to expose your development server to the internet with HTTPS. After downloading and installing ngrok, start the development server for this app and then run the following commands:
 
 ```
 ngrok http localhost:3000
